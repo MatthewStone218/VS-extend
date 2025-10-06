@@ -56,7 +56,8 @@ public class DocumentSaveHandler : IVsRunningDocTableEvents
                 string fileContent = File.ReadAllText(pbstrMkDocument);
                 Dictionary<string, object> args = new Dictionary<string, object>
                 {
-                    { "fileContent", fileContent }
+                    { "fileContent", fileContent },
+                    { "filePath", pbstrMkDocument }
                 };
                 CallbackAfterSave(args);
             }

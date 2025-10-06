@@ -8,12 +8,14 @@ public class ErrorListService : IDisposable
 {
     // ErrorListProvider 인스턴스는 한 번만 생성하여 재사용합니다.
     private readonly ErrorListProvider _errorProvider;
+    private readonly JoinableTaskFactory _jtf;
 
-    public ErrorListService(IServiceProvider serviceProvider)
+    public ErrorListService(IServiceProvider serviceProvider, jtf)
     {
         // ErrorListProvider 초기화
         // 서비스 프로바이더는 보통 Package 클래스 인스턴스입니다.
         _errorProvider = new ErrorListProvider(serviceProvider);
+        _jtf = jtf;
     }
 
     /// <summary>
@@ -23,6 +25,7 @@ public class ErrorListService : IDisposable
     /// <param name="errors">키: 파일 경로, 값: 오류 메시지</param>
     public void Change(Dictionary<string, string> errors)
     {
+        await _jtf.SwitchToMainThreadAsync();
         // UI 스레드에서만 ErrorListProvider를 조작할 수 있습니다.
         ThreadHelper.ThrowIfNotOnUIThread();
 

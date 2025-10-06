@@ -27,7 +27,8 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
         {
             // 1. UI 스레드 전환 요청
             // DTE 서비스에 접근하려면 반드시 UI 스레드(Main Thread)로 전환해야 합니다.
-            await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+            JoinableTaskFactory jtf = this.JoinableTaskFactory;
+            await jtf.SwitchToMainThreadAsync(cancellationToken);
 
             // 2. DTE 서비스 가져오기
             DTE _DTE = await GetServiceAsync(typeof(DTE)) as DTE;
@@ -35,11 +36,12 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
             if (_DTE == null) return;
 
             // 3. 현재 프로젝트 경로를 가져와 저장
-            string ProjectPath = PathFinder.GetActiveProjectPath(_DTE);
+            PathFinder pathFinder = new PathFinder(jtf);
+            string ProjectPath = pathFinder.GetActiveProjectPath(_DTE);
             Dictionary<string,string> variable = EnvironmentLoader.LoadEnvFile(Path.Combine(ProjectPath, ".env"));
             APIKey = variable.TryGetValue("API_KEY", out string apiKey) ? apiKey : null;
 
-            ErrorListService errorListService = new ErrorListService(this);
+            ErrorListService errorListService = new ErrorListService(this, jtf);
             FileStatusManager fileStatusManager = new FileStatusManager(errorListService);
 
             _saveHandler = new DocumentSaveHandler(this);
