@@ -22,14 +22,13 @@ public class GeminiResponse
 public class GeminiFeedbackService
 {
     private readonly HttpClient _httpClient;
-    private readonly string _apiKey;
     private readonly string _model = "gemini-2.5-flash"; // 사용할 모델 지정
 
     public GeminiFeedbackService(string apiKey)
     {
         _httpClient = new HttpClient();
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        _httpClient.DefaultRequestHeaders.Add("x-goog-api-key", _apiKey);
+        _httpClient.DefaultRequestHeaders.Add("x-goog-api-key", apiKey);
     }
 
     public async Task<GeminiResponse> GetFeedbackAsync(
