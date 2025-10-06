@@ -5,19 +5,18 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using EnvDTE;
 using Microsoft.VisualStudio.RpcContracts.Commands;
+using Newtonsoft.Json;
 
 // Gemini API의 최종 응답을 나타내는 모델
 public class GeminiResponse
 {
-    [JsonPropertyName("problem_found")]
+    [JsonProperty("problem_found")]
     public bool ProblemFound { get; set; }
 
-    [JsonPropertyName("message")]
+    [JsonProperty("message")]
     public string Message { get; set; }
 }
 public class GeminiFeedbackService
@@ -57,7 +56,7 @@ public class GeminiFeedbackService
             }
         };
 
-        var jsonPayload = JsonSerializer.Serialize(requestBody);
+        var jsonPayload = JsonConvert.SerializeObject(requestBody);
         var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
 
         string url = $"https://generativelanguage.googleapis.com/v1/models/{_model}/generateContent";
@@ -67,7 +66,7 @@ public class GeminiFeedbackService
 
         var rawResponse = await response.Content.ReadAsStringAsync();
 
-        var parsedResponse = JsonSerializer.Deserialize<GeminiResponse>(rawResponse);
+        var parsedResponse = JsonConvert.DeserializeObject<GeminiResponse>(rawResponse);
 
         return parsedResponse;
     }

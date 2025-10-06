@@ -11,18 +11,17 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace VS_extend.VSExtension // 네임스페이스 일치
 {
-    public string ProjectPath = null;
-    public DTE _DTE = null;
-
-    // VS Package Guid 등 기존 속성은 그대로 둡니다.
-    // ...
     [ProvideAutoLoad(UIContextGuids80.SolutionExists)] // 솔루션이 열릴 때 자동 로드
     [Guid("705E62DA-DCD2-402B-96DA-4D65A7B6244A")]
     public sealed class VS_extendPackage : AsyncPackage
     {
+        public string ProjectPath = null;
+        public DTE _DTE = null;
+        public string APIKey = null;
         private ErrorListService _errorListService;
 
         // Package가 로드될 때(초기화) 실행되는 메서드
@@ -33,22 +32,18 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
             await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
             // 2. DTE 서비스 가져오기
-            _DTE = await GetServiceAsync(typeof(DTE)) as DTE;
+            DTE _DTE = await GetServiceAsync(typeof(DTE)) as DTE;
 
             // 3. 현재 프로젝트 경로를 가져와 저장
             if (_DTE != null)
             {
-                ProjectPath = GetActiveProjectPath(_DTE);
+                string ProjectPath = PathFinder.GetActiveProjectPath(_DTE);
 
-                // 디버그 출력 (Output 창에서 확인 가능)
-                System.Diagnostics.Debug.WriteLine($"[VSIX 초기화] 현재 프로젝트 경로: {_currentProjectPath}");
+                Dictionary<string,string> variable = EnvironmentLoader.LoadEnvFile(Path.Combine(ProjectPath, ".env"));
 
                 // TODO: 이 시점에서 GeminiFeedbackService를 초기화하고 API 키를 전달할 수 있습니다.
                 // var geminiService = new GeminiFeedbackService("YOUR_API_KEY");
             }
-
-            _errorListService = new ErrorListService(this);
-            _errorListService.InitializeMessage("⭐ 문제가 발견되지 않았습니다. ⭐");
         }
 
         // Package가 언로드될 때 리소스를 정리합니다.

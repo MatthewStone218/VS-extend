@@ -1,0 +1,4 @@
+C:\Users\matt\Desktop\working-directory\VS-extend\VS-extend\obj\Debug\VS-extend.csproj.AssemblyReference.cache
+C:\Users\matt\Desktop\working-directory\VS-extend\VS-extend\obj\Debug\_EmptyResource.resources
+C:\Users\matt\Desktop\working-directory\VS-extend\VS-extend\obj\Debug\VS-extend.csproj.GenerateResource.cache
+C:\Users\matt\Desktop\working-directory\VS-extend\VS-extend\obj\Debug\VS-extend.csproj.CoreCompileInputs.cache

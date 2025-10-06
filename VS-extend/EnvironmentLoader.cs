@@ -1,0 +1,64 @@
+﻿using System;
+using System.IO;
+using System.Collections.Generic;
+
+public class EnvironmentLoader
+{
+    // DTE로 가져온 프로젝트 폴더 경로를 인자로 받습니다.
+    public static Dictionary<string, string> LoadEnvFile(string projectPath)
+    {
+        var environmentVariables = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        // 프로젝트 경로에 있는 .env 파일의 전체 경로를 구성합니다.
+        string envFilePath = Path.Combine(projectPath, ".env");
+
+        // 파일이 존재하는지 확인합니다.
+        if (!File.Exists(envFilePath))
+        {
+            System.Diagnostics.Debug.WriteLine($"[ENV] .env 파일을 경로에서 찾을 수 없습니다: {envFilePath}");
+            return environmentVariables; // 빈 딕셔너리 반환
+        }
+
+        System.Diagnostics.Debug.WriteLine($"[ENV] .env 파일 로드 시작: {envFilePath}");
+
+        try
+        {
+            // 파일을 한 줄씩 읽습니다.
+            foreach (var line in File.ReadAllLines(envFilePath))
+            {
+                // 주석(#)이거나 빈 줄은 건너뜁니다.
+                if (string.IsNullOrWhiteSpace(line) || line.TrimStart().StartsWith("#"))
+                {
+                    continue;
+                }
+
+                // 줄을 '=' 기호를 기준으로 나눕니다.
+                int separatorIndex = line.IndexOf('=');
+
+                if (separatorIndex > 0)
+                {
+                    // 키와 값 추출
+                    string key = line.Substring(0, separatorIndex).Trim();
+                    string value = line.Substring(separatorIndex + 1).Trim();
+
+                    // 값에서 따옴표(" 또는 ') 제거 (선택 사항)
+                    value = value.Trim('"').Trim('\'');
+
+                    // 딕셔너리에 추가합니다.
+                    if (!string.IsNullOrEmpty(key))
+                    {
+                        environmentVariables[key] = value;
+                        System.Diagnostics.Debug.WriteLine($"[ENV 로드됨] Key: {key}");
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            // 파일 읽기 중 발생한 오류 처리
+            System.Diagnostics.Debug.WriteLine($"[ENV 오류] .env 파일을 읽는 중 오류 발생: {ex.Message}");
+        }
+
+        return environmentVariables;
+    }
+}
