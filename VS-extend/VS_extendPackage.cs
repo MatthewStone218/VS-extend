@@ -34,16 +34,15 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
             // 2. DTE 서비스 가져오기
             DTE _DTE = await GetServiceAsync(typeof(DTE)) as DTE;
 
+            if (_DTE == null) return;
+
             // 3. 현재 프로젝트 경로를 가져와 저장
-            if (_DTE != null)
-            {
-                string ProjectPath = PathFinder.GetActiveProjectPath(_DTE);
+            string ProjectPath = PathFinder.GetActiveProjectPath(_DTE);
+            Dictionary<string,string> variable = EnvironmentLoader.LoadEnvFile(Path.Combine(ProjectPath, ".env"));
+            APIKey = variable.TryGetValue("API_KEY", out string apiKey) ? apiKey : null;
 
-                Dictionary<string,string> variable = EnvironmentLoader.LoadEnvFile(Path.Combine(ProjectPath, ".env"));
-
-                // TODO: 이 시점에서 GeminiFeedbackService를 초기화하고 API 키를 전달할 수 있습니다.
-                // var geminiService = new GeminiFeedbackService("YOUR_API_KEY");
-            }
+            // TODO: 이 시점에서 GeminiFeedbackService를 초기화하고 API 키를 전달할 수 있습니다.
+            // var geminiService = new GeminiFeedbackService("YOUR_API_KEY");
         }
 
         // Package가 언로드될 때 리소스를 정리합니다.
