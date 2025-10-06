@@ -19,11 +19,6 @@ public class GeminiResponse
 
     [JsonPropertyName("message")]
     public string Message { get; set; }
-
-    // 응답의 나머지 부분은 필요에 따라 Dictionary 등으로 유연하게 처리할 수 있습니다.
-    // 여기서는 나머지 데이터를 문자열로 저장하는 것으로 가정합니다.
-    [JsonExtensionData]
-    public Dictionary<string, object> AdditionalData { get; set; } = new Dictionary<string, object>();
 }
 public class GeminiFeedbackService
 {
