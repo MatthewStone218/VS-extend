@@ -14,8 +14,11 @@ using Microsoft.VisualStudio.RpcContracts.Commands;
 // Gemini API의 최종 응답을 나타내는 모델
 public class GeminiResponse
 {
-    [JsonPropertyName("update")]
-    public bool Update { get; set; }
+    [JsonPropertyName("problem_found")]
+    public bool ProblemFound { get; set; }
+
+    [JsonPropertyName("message")]
+    public string Message { get; set; }
 
     // 응답의 나머지 부분은 필요에 따라 Dictionary 등으로 유연하게 처리할 수 있습니다.
     // 여기서는 나머지 데이터를 문자열로 저장하는 것으로 가정합니다.
@@ -42,13 +45,9 @@ public class GeminiFeedbackService
 
         var requestBody = new
         {
-            contents = new[]
+            contents = new
             {
-                new
-                {
-                    role = "user",
-                    parts = new[] { new { text = systemPrompt + "\n---\n" + promptContent } }
-                }
+                text = systemPrompt + "\n---실제 코드---\n" + promptContent
             },
             generationConfig = new
             {
@@ -57,7 +56,7 @@ public class GeminiFeedbackService
                     type = "OBJECT",
                     properties = new {
                         problem_found = new { type = "BOOLEAN", description = "os 종속적인 부분이 있는지 여부" },
-                        MessagePack = new { type = "STRING", description = "문제가 있는 부분에 대한 간단한 설명" }
+                        message = new { type = "STRING", description = "문제가 있는 부분에 대한 간단한 설명" }
                     }
                 }
             }

@@ -12,7 +12,7 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
     // ...
     [ProvideAutoLoad(UIContextGuids80.SolutionExists)] // 솔루션이 열릴 때 자동 로드
     [Guid("705E62DA-DCD2-402B-96DA-4D65A7B6244A")]
-    public sealed class YourPackage : AsyncPackage
+    public sealed class VS_extendPackage : AsyncPackage
     {
         private ErrorListService _errorListService;
 
