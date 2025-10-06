@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="EnvironmentLoader.cs" />
     <Compile Include="ErrorListService.cs" />
+    <Compile Include="FileStatusManager.cs" />
     <Compile Include="GeminiAPI.cs" />
     <Compile Include="PathFinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

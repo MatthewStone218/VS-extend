@@ -10,7 +10,7 @@ public class DocumentSaveHandler : IVsRunningDocTableEvents
 {
     private readonly IVsRunningDocumentTable _rdt;
     private uint _eventCookie;
-    private Action<Dictionary<string, object>> CallbackAfterSave;
+    public Action<Dictionary<string, object>> CallbackAfterSave { get; set; }
 
     public DocumentSaveHandler(IServiceProvider serviceProvider)
     {
