@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Threading;
@@ -7,16 +8,14 @@ using Microsoft.VisualStudio.Threading;
 public class PathFinder
 {
     private readonly JoinableTaskFactory _jtf;
-    PathFinder(JoinableTaskFactory jtf)
+    public PathFinder(JoinableTaskFactory jtf)
     {
         _jtf = jtf;
     }
     // DTE 객체를 받아서 활성 프로젝트의 경로를 반환하는 메서드
-    public string GetActiveProjectPath(DTE dte)
+    public async Task<string> GetActiveProjectPathAsync(DTE dte)
     {
         await _jtf.SwitchToMainThreadAsync();
-        // UI 스레드에서만 호출될 것을 가정합니다.
-        ThreadHelper.ThrowIfNotOnUIThread();
 
         try
         {

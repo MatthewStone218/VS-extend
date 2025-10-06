@@ -37,7 +37,7 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
 
             // 3. 현재 프로젝트 경로를 가져와 저장
             PathFinder pathFinder = new PathFinder(jtf);
-            string ProjectPath = pathFinder.GetActiveProjectPath(_DTE);
+            string ProjectPath = await pathFinder.GetActiveProjectPathAsync(_DTE);
             Dictionary<string,string> variable = EnvironmentLoader.LoadEnvFile(Path.Combine(ProjectPath, ".env"));
             APIKey = variable.TryGetValue("API_KEY", out string apiKey) ? apiKey : null;
 

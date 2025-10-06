@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Threading;
 
 public class ErrorListService : IDisposable
 {
@@ -10,7 +11,7 @@ public class ErrorListService : IDisposable
     private readonly ErrorListProvider _errorProvider;
     private readonly JoinableTaskFactory _jtf;
 
-    public ErrorListService(IServiceProvider serviceProvider, jtf)
+    public ErrorListService(IServiceProvider serviceProvider, JoinableTaskFactory jtf)
     {
         // ErrorListProvider 초기화
         // 서비스 프로바이더는 보통 Package 클래스 인스턴스입니다.
