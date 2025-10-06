@@ -33,7 +33,7 @@ public class GeminiFeedbackService
         _httpClient.DefaultRequestHeaders.Add("x-goog-api-key", _apiKey);
     }
 
-    public async Task<(GeminiResponse ParsedResponse, string RawText)> GetFeedbackAsync(
+    public async Task<GeminiResponse> GetFeedbackAsync(
         string promptContent)
     {
         string systemPrompt = $"아래 코드에서 os 종속적인 부분이 있는지 확인해줘. os 종속적인 내용이 있다면 문제가 있는거야. 만약 문자게 있다면 problem_found를 true로, 없다면 false로 반환해줘. message에는 어느 부분이 문제인지 아주 간단하게 설명해줘. 문제가 없다면 그냥 \"아무 문제도 발견되지 않았습니다.\"라고 써줘.";
@@ -67,18 +67,8 @@ public class GeminiFeedbackService
 
         var rawResponse = await response.Content.ReadAsStringAsync();
 
-        var apiResult = JsonDocument.Parse(rawResponse);
+        var parsedResponse = JsonSerializer.Deserialize<GeminiResponse>(rawResponse);
 
-        string jsonText = apiResult.RootElement
-            .GetProperty("candidates")[0]
-            .GetProperty("content")
-            .GetProperty("parts")[0]
-            .GetProperty("text")
-            .GetString() ?? "{}";
-
-
-        var parsedResponse = JsonSerializer.Deserialize<GeminiResponse>(jsonText);
-
-        return (parsedResponse, jsonText);
+        return parsedResponse;
     }
 }
