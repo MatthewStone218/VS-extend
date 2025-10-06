@@ -59,13 +59,9 @@
                 "NU1604"
               ]
             },
-            "System.Net.Http.Json": {
+            "Newtonsoft.Json": {
               "target": "Package",
-              "version": "[9.0.9, )"
-            },
-            "System.Text.Json": {
-              "target": "Package",
-              "version": "[9.0.9, )"
+              "version": "[13.0.3, )"
             }
           }
         }
