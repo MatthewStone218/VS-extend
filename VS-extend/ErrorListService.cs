@@ -7,6 +7,7 @@ namespace VS_extend.VSExtension
 {
     public class ErrorListService : IDisposable
     {
+        static public ErrorListService _ErrorListService = null;
         private readonly ErrorListProvider _errorListProvider;
         // ⭐ 이 변수에 우리가 관리할 하나의 ErrorTask 객체를 저장합니다.
         private ErrorTask _persistentTask;

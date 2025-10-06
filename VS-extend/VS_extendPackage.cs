@@ -42,6 +42,9 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
             Dictionary<string,string> variable = EnvironmentLoader.LoadEnvFile(Path.Combine(ProjectPath, ".env"));
             APIKey = variable.TryGetValue("API_KEY", out string apiKey) ? apiKey : null;
 
+            ErrorListService errorListService = new ErrorListService(this);
+            FileStatusManager fileStatusManager = new FileStatusManager(errorListService);
+
             _saveHandler = new DocumentSaveHandler(this);
             _saveHandler.CallbackAfterSave = (args) =>
             {
