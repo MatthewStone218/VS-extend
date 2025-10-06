@@ -42,7 +42,7 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
             APIKey = variable.TryGetValue("API_KEY", out string apiKey) ? apiKey : null;
 
             ErrorListService errorListService = new ErrorListService(this, jtf);
-            FileStatusManager fileStatusManager = new FileStatusManager(errorListService);
+            FileStatusManager fileStatusManager = new FileStatusManager(errorListService, jtf);
 
             _saveHandler = new DocumentSaveHandler(this, jtf);
             _saveHandler.CallbackAfterSave = (args) =>
@@ -51,12 +51,12 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
                 if (args.TryGetValue("fileContent", out object fileContentObj) && fileContentObj is string fileContent && args.TryGetValue("filePath", out object filePathObject) && filePathObject is string filePath)
                 {
                     GeminiFeedbackService geminiService = new GeminiFeedbackService(APIKey);
-                    Task.Run(async () => { 
+                    JoinableTask jt = jtf.RunAsync(async () => { 
                         var response = await geminiService.GetFeedbackAsync(fileContent);
                         bool problemFound = response.ProblemFound;
                         string message = response.Message;
                         fileStatusManager.SavedFile(filePath, problemFound, message);
-                    }).Forget();
+                    });
                 }
             };
         }

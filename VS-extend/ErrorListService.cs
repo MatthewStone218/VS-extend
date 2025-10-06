@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -24,11 +25,9 @@ public class ErrorListService : IDisposable
     /// 이 메서드는 Dictionary<파일 경로, 오류 메시지>를 인자로 받습니다.
     /// </summary>
     /// <param name="errors">키: 파일 경로, 값: 오류 메시지</param>
-    public void Change(Dictionary<string, string> errors)
+    public async Task ChangeAsync(Dictionary<string, string> errors)
     {
         await _jtf.SwitchToMainThreadAsync();
-        // UI 스레드에서만 ErrorListProvider를 조작할 수 있습니다.
-        ThreadHelper.ThrowIfNotOnUIThread();
 
         // 기존에 이 Provider가 등록했던 모든 오류 항목을 지웁니다.
         _errorProvider.Tasks.Clear();
@@ -37,7 +36,6 @@ public class ErrorListService : IDisposable
         {
             // 오류가 없으면 목록을 비우고 끝냅니다.
             _errorProvider.Refresh();
-            return;
         }
 
         foreach (var errorEntry in errors)

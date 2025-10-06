@@ -36,7 +36,7 @@ namespace VS_extend
         }
         public void ApplyErrorList()
         {
-            _jtf.RunAsync(async () => await _errorListService.ChangeAsync(Files));
+            JoinableTask jt = _jtf.RunAsync(async () => { await _errorListService.ChangeAsync(Files); });
         }
     }
 }
