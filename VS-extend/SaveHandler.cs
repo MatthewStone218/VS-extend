@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
@@ -9,6 +10,7 @@ public class DocumentSaveHandler : IVsRunningDocTableEvents
 {
     private readonly IVsRunningDocumentTable _rdt;
     private uint _eventCookie;
+    private Action<Dictionary<string, object>> CallbackAfterSave;
 
     public DocumentSaveHandler(IServiceProvider serviceProvider)
     {
@@ -49,6 +51,11 @@ public class DocumentSaveHandler : IVsRunningDocTableEvents
             try
             {
                 string fileContent = File.ReadAllText(pbstrMkDocument);
+                Dictionary<string, object> args = new Dictionary<string, object>
+                {
+                    { "fileContent", fileContent }
+                };
+                CallbackAfterSave(args);
             }
             catch (Exception ex)
             {
