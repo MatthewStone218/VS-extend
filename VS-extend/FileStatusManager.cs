@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.Threading;
 using VS_extend.VSExtension;
 
 namespace VS_extend
@@ -10,8 +11,10 @@ namespace VS_extend
     public class FileStatusManager
     {
         private readonly ErrorListService _errorListService;
-        public FileStatusManager(ErrorListService errorListService) {
+        private readonly JoinableTaskFactory _jtf;
+        public FileStatusManager(ErrorListService errorListService, JoinableTaskFactory jtf) {
             _errorListService = errorListService;
+            _jtf = jtf;
         }
         private Dictionary<string, string> Files = new Dictionary<string, string>{ };//path, error message
         public void SavedFile(string path, bool problem_found, string message)
@@ -33,7 +36,7 @@ namespace VS_extend
         }
         public void ApplyErrorList()
         {
-            _errorListService.Change(Files);
+            _jtf.RunAsync(async () => await _errorListService.ChangeAsync(Files));
         }
     }
 }
