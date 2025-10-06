@@ -14,6 +14,9 @@ public class DocumentSaveHandler : IVsRunningDocTableEvents
 
     public DocumentSaveHandler(IServiceProvider serviceProvider)
     {
+        // RDT 접근은 UI 스레드가 필요합니다.
+        ThreadHelper.ThrowIfNotOnUIThread();
+
         // RDT 서비스 가져오기
         _rdt = serviceProvider.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
 

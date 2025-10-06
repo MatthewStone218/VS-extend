@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.Shell;
 public class PathFinder
 {
     // DTE 객체를 받아서 활성 프로젝트의 경로를 반환하는 메서드
-    public string GetActiveProjectPath(DTE dte)
+    static public string GetActiveProjectPath(DTE dte)
     {
         // UI 스레드에서만 호출될 것을 가정합니다.
         ThreadHelper.ThrowIfNotOnUIThread();
