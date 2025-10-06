@@ -13,8 +13,8 @@ namespace VS_extend
         public FileStatusManager(ErrorListService errorListService) {
             _errorListService = errorListService;
         }
-        static private Dictionary<string, string> Files = new Dictionary<string, string>{ };//path, error message
-        static public void SavedFile(string path, bool problem_found, string message)
+        private Dictionary<string, string> Files = new Dictionary<string, string>{ };//path, error message
+        public void SavedFile(string path, bool problem_found, string message)
         {
             if (problem_found)
             {
@@ -24,19 +24,16 @@ namespace VS_extend
                 Files.Remove(path);
             }
         }
-        static public void DeletedFile(string path)
+        public void DeletedFile(string path)
         {
             if (Files.TryGetValue(path,out string str))
             {
                 Files.Remove(path);
             }
         }
-        static public void ApplyErrorList()
+        public void ApplyErrorList()
         {
-            for (int i = 0; i < FileStatusManager.Files.Count; i++)
-            { 
-                
-            }
+            _errorListService.Change(Files);
         }
     }
 }

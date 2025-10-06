@@ -49,14 +49,14 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
             _saveHandler.CallbackAfterSave = (args) =>
             {
                 if (APIKey == null) return;
-                if (args.TryGetValue("fileContent", out object fileContentObj) && fileContentObj is string fileContent)
+                if (args.TryGetValue("fileContent", out object fileContentObj) && fileContentObj is string fileContent && args.TryGetValue("filePath", out object filePathObject) && filePathObject is string filePath)
                 {
                     GeminiFeedbackService geminiService = new GeminiFeedbackService(APIKey);
                     Task.Run(async () => { 
                         var response = await geminiService.GetFeedbackAsync(fileContent);
-                        string message = response.ProblemFound
-                        ? $"[VS_extend] OS 종속적인 코드가 발견되었습니다: {response.Message}"
-                        : "[VS_extend] 아무 문제도 발견되지 않았습니다.";
+                        bool problemFound = response.ProblemFound;
+                        string message = response.Message;
+                        fileStatusManager.SavedFile(filePath, problemFound, message);
                     }).Forget();
                 }
             };
