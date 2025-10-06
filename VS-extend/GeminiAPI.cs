@@ -30,9 +30,9 @@ public class GeminiFeedbackService
 
     public GeminiFeedbackService(string apiKey)
     {
-        _apiKey = apiKey;
         _httpClient = new HttpClient();
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        _httpClient.DefaultRequestHeaders.Add("x-goog-api-key", _apiKey);
     }
 
     public async Task<(GeminiResponse ParsedResponse, string RawText)> GetFeedbackAsync(
@@ -50,7 +50,7 @@ public class GeminiFeedbackService
                     parts = new[] { new { text = systemPrompt + "\n---\n" + promptContent } }
                 }
             },
-            config = new
+            generationConfig = new
             {
                 responseMimeType = "application/json",
                 responseSchema = new {
@@ -66,7 +66,7 @@ public class GeminiFeedbackService
         var jsonPayload = JsonSerializer.Serialize(requestBody);
         var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
 
-        string url = $"https://generativelanguage.googleapis.com/v1/models/{_model}:generateContent?key={_apiKey}";
+        string url = $"https://generativelanguage.googleapis.com/v1/models/{_model}/generateContent";
 
         var response = await _httpClient.PostAsync(url, content);
         response.EnsureSuccessStatusCode();
