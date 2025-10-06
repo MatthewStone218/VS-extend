@@ -44,7 +44,7 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
             ErrorListService errorListService = new ErrorListService(this, jtf);
             FileStatusManager fileStatusManager = new FileStatusManager(errorListService);
 
-            _saveHandler = new DocumentSaveHandler(this);
+            _saveHandler = new DocumentSaveHandler(this, jtf);
             _saveHandler.CallbackAfterSave = (args) =>
             {
                 if (APIKey == null) return;

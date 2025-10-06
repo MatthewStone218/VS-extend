@@ -4,16 +4,20 @@ using System.IO;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Threading;
 
 // IVsRunningDocTableEvents 인터페이스를 구현합니다.
 public class DocumentSaveHandler : IVsRunningDocTableEvents
 {
+    private readonly JoinableTaskFactory _jtf;
     private readonly IVsRunningDocumentTable _rdt;
     private uint _eventCookie;
     public Action<Dictionary<string, object>> CallbackAfterSave { get; set; }
 
-    public DocumentSaveHandler(IServiceProvider serviceProvider)
+    public DocumentSaveHandler(IServiceProvider serviceProvider, JoinableTaskFactory jtf)
     {
+        _jtf = jtf;
+        await _jtf.SwitchToMainThreadAsync();
         // RDT 접근은 UI 스레드가 필요합니다.
         ThreadHelper.ThrowIfNotOnUIThread();
 
