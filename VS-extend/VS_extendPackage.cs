@@ -18,7 +18,7 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
     [Guid("705E62DA-DCD2-402B-96DA-4D65A7B6244A")]
     public sealed class VS_extendPackage : AsyncPackage
     {
-        static VS_extendPackage _VS_extendPackage;
+        static public VS_extendPackage _VS_extendPackage;
         public Main main = null;
         public CancellationToken _CancellationToken;
         public IProgress<ServiceProgressData> _Progress;

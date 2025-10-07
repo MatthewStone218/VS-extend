@@ -22,6 +22,10 @@ namespace VS_extend
             CreateNewCTS();
             StartObserving();
         }
+        public void Throw()
+        {
+            CTS.Cancel();
+        }
         private void CreateNewCTS()
         {
             CTS = new CancellationTokenSource();
