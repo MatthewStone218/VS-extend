@@ -56,7 +56,7 @@ public class EnvironmentLoader
         {
             // 파일 읽기 중 발생한 오류 처리
             VSOutput.Message($"VSEXT(EnvironmentLoader.cs) .env 파일을 읽는 중 오류 발생: {ex.Message}");
-            VS_extendPackage._VS_extendPackage.main._ExceptionManager.Cancel();
+            VS_extendPackage._VS_extendPackage._ExceptionManager.Cancel();
         }
 
         return environmentVariables;

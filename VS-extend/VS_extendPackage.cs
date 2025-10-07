@@ -14,7 +14,8 @@ using Task = System.Threading.Tasks.Task;
 
 namespace VS_extend.VSExtension // 네임스페이스 일치
 {
-    [ProvideAutoLoad(UIContextGuids80.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)] // 솔루션이 열릴 때 자동 로드
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
+    [ProvideAutoLoad(UIContextGuids80.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
     [Guid("705E62DA-DCD2-402B-96DA-4D65A7B6244A")]
     public sealed class VS_extendPackage : AsyncPackage
     {
@@ -22,6 +23,7 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
         public Main main = null;
         public CancellationToken _CancellationToken;
         public IProgress<ServiceProgressData> _Progress;
+        public ExceptionManager _ExceptionManager;
         public Main M => main;
         private JoinableTaskFactory _jtf;
 
@@ -38,6 +40,7 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
 
         public void StartExtension()
         {
+            _ExceptionManager = new ExceptionManager(_jtf);
             main = new Main(_CancellationToken, _Progress, this, _jtf);
             JoinableTask jt = _jtf.RunAsync(async () => await main.InitAsync());
         }

@@ -23,7 +23,6 @@ namespace VS_extend
         public GeminiFeedbackService _GeminiService;
         public Scheduler FileScanScheduler;
         public JoinableTaskFactory _jtf;
-        public ExceptionManager _ExceptionManager;
         public Main(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress, VS_extendPackage vsExtendPackage, JoinableTaskFactory jtf)
         {
             _CancellationToken = cancellationToken;
@@ -50,8 +49,6 @@ namespace VS_extend
             PathFinder pathFinder = new PathFinder(_jtf);
             string ProjectPath = await pathFinder.GetActiveProjectPathAsync(_DTE);
 
-            _ExceptionManager = new ExceptionManager(_jtf);
-
             EnvironmentLoader.CheckAndInitEnvFile(Path.Combine(ProjectPath, ".env"));
             Dictionary<string, string> variable = EnvironmentLoader.LoadEnvFile(Path.Combine(ProjectPath, ".env"));
             string APIKey = variable.TryGetValue("API_KEY", out string apiKey) ? apiKey : null;
@@ -69,7 +66,7 @@ namespace VS_extend
                     JoinableTask jt = _jtf.RunAsync(async () => {
                         try
                         {
-                            VS_extendPackage._VS_extendPackage.main._ExceptionManager.Throw();
+                            VS_extendPackage._VS_extendPackage._ExceptionManager.Throw();
                             var response = await _GeminiService.GetFeedbackAsync(fileContent);
                             bool problemFound = response.ProblemFound;
                             string message = response.Message;
@@ -78,10 +75,10 @@ namespace VS_extend
                         catch (Exception e)
                         {
                             VSOutput.Message($"VSEXT(Main.cs) 파일 저장에 따른 API호출에 문제가 발생했습니다. {e}");
-                            VS_extendPackage._VS_extendPackage.main._ExceptionManager.Cancel();
+                            VS_extendPackage._VS_extendPackage._ExceptionManager.Cancel();
                         }
                     });
-                    VS_extendPackage._VS_extendPackage.main._ExceptionManager.Register(jt.Task);
+                    VS_extendPackage._VS_extendPackage._ExceptionManager.Register(jt.Task);
                 }
             };
             FileScanScheduler = new Scheduler(() => {
@@ -92,7 +89,7 @@ namespace VS_extend
                 catch (Exception e)
                 {
                     VSOutput.Message($"VSEXT(Main.cs) 삭제된 파일을 스캔하는 과정에서 예외가 발생했습니다. {e}");
-                    VS_extendPackage._VS_extendPackage.main._ExceptionManager.Cancel();
+                    VS_extendPackage._VS_extendPackage._ExceptionManager.Cancel();
                 }
             }, null, 0, 3000);
             FileScanScheduler.StartTask();

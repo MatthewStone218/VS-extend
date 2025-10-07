@@ -26,11 +26,11 @@ public class DocumentEventHandler : IVsRunningDocTableEvents
         _serviceProvider = serviceProvider;
         _jtf = jtf;
         InitTask = _jtf.RunAsync(async () => await InitAsync());
-        VS_extendPackage._VS_extendPackage.main._ExceptionManager.Register(InitTask.Task);
+        VS_extendPackage._VS_extendPackage._ExceptionManager.Register(InitTask.Task);
     }
     private async Task InitAsync()
     {
-        VS_extendPackage._VS_extendPackage.main._ExceptionManager.Throw();
+        VS_extendPackage._VS_extendPackage._ExceptionManager.Throw();
         await _jtf.SwitchToMainThreadAsync();
 
         // RDT 서비스 가져오기
@@ -46,12 +46,12 @@ public class DocumentEventHandler : IVsRunningDocTableEvents
     public int OnAfterSave(uint docCookie)
     {
         JoinableTask jt = _jtf.RunAsync(async () => await OnAfterSaveAsync(docCookie));
-        VS_extendPackage._VS_extendPackage.main._ExceptionManager.Register(jt.Task);
+        VS_extendPackage._VS_extendPackage._ExceptionManager.Register(jt.Task);
         return VSConstants.S_OK;
     }
     public async Task<int> OnAfterSaveAsync(uint docCookie)
     {
-        VS_extendPackage._VS_extendPackage.main._ExceptionManager.Throw();
+        VS_extendPackage._VS_extendPackage._ExceptionManager.Throw();
         await _jtf.SwitchToMainThreadAsync();
 
         // docCookie를 사용하여 저장된 문서 정보(파일명, 경로 등)를 가져옵니다.
@@ -86,7 +86,7 @@ public class DocumentEventHandler : IVsRunningDocTableEvents
             catch (Exception e)
             {
                 VSOutput.Message($"VSEXT(DocumentEventHandler.cs) 파일을 읽는 도중 문제 발생. {e}");
-                VS_extendPackage._VS_extendPackage.main._ExceptionManager.Cancel();
+                VS_extendPackage._VS_extendPackage._ExceptionManager.Cancel();
             }
         }
 
