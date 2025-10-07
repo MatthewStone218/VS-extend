@@ -54,10 +54,11 @@ namespace VS_extend
                 if (finishedTask.IsFaulted)
                 {
                     CTS.Cancel();
+                }
+                if(TaskList.Count == 0)
+                {
                     CTS.Dispose();
-                    CTS = new CancellationTokenSource();
-                    CT = CTS.Token;
-                    TaskList.Clear();
+                    CreateNewCTS();
                 }
             }
         }
