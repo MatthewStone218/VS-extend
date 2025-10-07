@@ -39,6 +39,15 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
             await main.InitAsync();
         }
 
+        public async Task StopExtensionAsync()
+        {
+            if (main != null)
+            {
+                await main.StopAsync();
+                main = null;
+            }
+        }
+
         // Package가 언로드될 때 리소스를 정리합니다.
         protected override void Dispose(bool disposing)
         {

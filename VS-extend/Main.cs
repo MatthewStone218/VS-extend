@@ -30,7 +30,7 @@ namespace VS_extend
             _VsExtendPackage = vsExtendPackage;
             _jtf = jtf;
         }
-        JoinableTaskFactory jtf = _VsExtendPackage.JoinableTaskFactory;
+        
         public async Task InitAsync()
         {
             //로거
@@ -46,23 +46,23 @@ namespace VS_extend
             if (_DTE == null) return;
 
             // 3. 현재 프로젝트 경로를 가져와 저장
-            PathFinder pathFinder = new PathFinder(jtf);
+            PathFinder pathFinder = new PathFinder(_jtf);
             string ProjectPath = await pathFinder.GetActiveProjectPathAsync(_DTE);
             EnvironmentLoader.CheckAndInitEnvFile(Path.Combine(ProjectPath, ".env"));
             Dictionary<string, string> variable = EnvironmentLoader.LoadEnvFile(Path.Combine(ProjectPath, ".env"));
             string APIKey = variable.TryGetValue("API_KEY", out string apiKey) ? apiKey : null;
             if (APIKey == null || APIKey == "") return;
 
-            ErrorListService errorListService = new ErrorListService(_VsExtendPackage, jtf);
-            _FileStatusManager = new FileStatusManager(errorListService, jtf);
+            ErrorListService errorListService = new ErrorListService(_VsExtendPackage, _jtf);
+            _FileStatusManager = new FileStatusManager(errorListService, _jtf);
 
-            _DocumentEventHandler = new DocumentEventHandler(_VsExtendPackage, jtf);
+            _DocumentEventHandler = new DocumentEventHandler(_VsExtendPackage, _jtf);
             _DocumentEventHandler.CallbackAfterSave = (args) =>
             {
                 if (args.TryGetValue("fileContent", out object fileContentObj) && fileContentObj is string fileContent && args.TryGetValue("filePath", out object filePathObject) && filePathObject is string filePath)
                 {
                     _GeminiService = new GeminiFeedbackService(APIKey);
-                    JoinableTask jt = jtf.RunAsync(async () => {
+                    JoinableTask jt = _jtf.RunAsync(async () => {
                         try
                         {
                             var response = await _GeminiService.GetFeedbackAsync(fileContent);
