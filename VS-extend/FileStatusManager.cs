@@ -45,6 +45,11 @@ namespace VS_extend
             {
                 files.Remove(key);
             }
+
+            if (keysToRemove.Count > 0)
+            {
+                ApplyErrorList();
+            }
         }
 
         public void ApplyErrorList()
