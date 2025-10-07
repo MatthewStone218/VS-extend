@@ -19,18 +19,20 @@ public class DocumentEventHandler : IVsRunningDocTableEvents
     private uint _eventCookie;
     private readonly System.IServiceProvider _serviceProvider;
     private JoinableTask InitTask;
+    private VS_extendPackage _VS_extendPackage;
     public Action<Dictionary<string, object>> CallbackAfterSave { get; set; }
 
-    public DocumentEventHandler(System.IServiceProvider serviceProvider, JoinableTaskFactory jtf)
+    public DocumentEventHandler(VS_extendPackage __VS_extendPackage, JoinableTaskFactory jtf)
     {
-        _serviceProvider = serviceProvider;
+        _VS_extendPackage = __VS_extendPackage;
+        _serviceProvider = __VS_extendPackage;
         _jtf = jtf;
         InitTask = _jtf.RunAsync(async () => await InitAsync());
-        VS_extendPackage._VS_extendPackage._ExceptionManager.Register(InitTask.Task);
+        _VS_extendPackage._ExceptionManager.Register(InitTask.Task);
     }
     private async Task InitAsync()
     {
-        VS_extendPackage._VS_extendPackage._ExceptionManager.Throw();
+        _VS_extendPackage._ExceptionManager.Throw();
         await _jtf.SwitchToMainThreadAsync();
 
         // RDT 서비스 가져오기
@@ -46,12 +48,12 @@ public class DocumentEventHandler : IVsRunningDocTableEvents
     public int OnAfterSave(uint docCookie)
     {
         JoinableTask jt = _jtf.RunAsync(async () => await OnAfterSaveAsync(docCookie));
-        VS_extendPackage._VS_extendPackage._ExceptionManager.Register(jt.Task);
+        _VS_extendPackage._ExceptionManager.Register(jt.Task);
         return VSConstants.S_OK;
     }
     public async Task<int> OnAfterSaveAsync(uint docCookie)
     {
-        VS_extendPackage._VS_extendPackage._ExceptionManager.Throw();
+        _VS_extendPackage._ExceptionManager.Throw();
         await _jtf.SwitchToMainThreadAsync();
 
         // docCookie를 사용하여 저장된 문서 정보(파일명, 경로 등)를 가져옵니다.
@@ -86,7 +88,7 @@ public class DocumentEventHandler : IVsRunningDocTableEvents
             catch (Exception e)
             {
                 VSOutput.Message($"VSEXT(DocumentEventHandler.cs) 파일을 읽는 도중 문제 발생. {e}");
-                VS_extendPackage._VS_extendPackage._ExceptionManager.Cancel();
+                _VS_extendPackage._ExceptionManager.Throw();
             }
         }
 

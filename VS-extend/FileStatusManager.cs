@@ -13,7 +13,10 @@ namespace VS_extend
     {
         private readonly ErrorListService _errorListService;
         private readonly JoinableTaskFactory _jtf;
-        public FileStatusManager(ErrorListService errorListService, JoinableTaskFactory jtf) {
+        private VS_extendPackage _VS_extendPackage;
+        public FileStatusManager(VS_extendPackage __VS_extendPackage, ErrorListService errorListService, JoinableTaskFactory jtf)
+        {
+            _VS_extendPackage = __VS_extendPackage;
             _errorListService = errorListService;
             _jtf = jtf;
         }
@@ -61,11 +64,11 @@ namespace VS_extend
                 catch (Exception e)
                 {
                     VSOutput.Message($"VSEXT(FileStatusManager.cs) 오류 목록을 작성하던 도중에 예외 발생 {e}");
-                    VS_extendPackage._VS_extendPackage._ExceptionManager.Cancel();
+                    _VS_extendPackage._ExceptionManager.Throw();
                 }
             }
             );
-            VS_extendPackage._VS_extendPackage._ExceptionManager.Register(jt.Task);
+            _VS_extendPackage._ExceptionManager.Register(jt.Task);
         }
         public void Dispose()
         {
