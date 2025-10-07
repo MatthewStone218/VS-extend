@@ -26,6 +26,7 @@ public class DocumentEventHandler : IVsRunningDocTableEvents
         _serviceProvider = serviceProvider;
         _jtf = jtf;
         InitTask = _jtf.RunAsync(async () => await InitAsync());
+        VS_extendPackage._VS_extendPackage.main._ExceptionManager.Register(InitTask.Task);
     }
     private async Task InitAsync()
     {
@@ -44,6 +45,7 @@ public class DocumentEventHandler : IVsRunningDocTableEvents
     public int OnAfterSave(uint docCookie)
     {
         JoinableTask jt = _jtf.RunAsync(async () => await OnAfterSaveAsync(docCookie));
+        VS_extendPackage._VS_extendPackage.main._ExceptionManager.Register(jt.Task);
         return VSConstants.S_OK;
     }
     public async Task<int> OnAfterSaveAsync(uint docCookie)

@@ -32,7 +32,7 @@ namespace VS_extend
             CT = CTS.Token;
             TaskList.Clear();
         }
-        public void AddTask(Task t)
+        public void Register(Task t)
         {
             TaskList.Add(t);
         }

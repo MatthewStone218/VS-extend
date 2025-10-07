@@ -43,11 +43,11 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
             VS_extendPackage._VS_extendPackage.main._ExceptionManager.Register(jt.Task);
         }
 
-        public async Task StopExtensionAsync()
+        public void StopExtension()
         {
             if (main != null)
             {
-                await main.StopAsync();
+                JoinableTask jt = _jtf.RunAsync(async () => await main.StopAsync());
                 main = null;
             }
         }
