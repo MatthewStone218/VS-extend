@@ -10,6 +10,7 @@ using EnvDTE;
 using Microsoft.VisualStudio.RpcContracts.Commands;
 using Newtonsoft.Json;
 using VS_extend;
+using VS_extend.VSExtension;
 
 // Gemini API의 최종 응답을 나타내는 모델
 public class GeminiResponse
@@ -69,6 +70,7 @@ public class GeminiFeedbackService
         catch (HttpRequestException ex)
         {
             VSOutput.Message($"VSEXT(VSOutput.cs) API 요청에 실패했습니다.: {ex.Message}");
+            VS_extendPackage._VS_extendPackage.main._ExceptionManager.Throw();
             // 요청 실패 시 기본 응답 생성
             return new GeminiResponse
             {
@@ -86,6 +88,7 @@ public class GeminiFeedbackService
         catch (JsonException ex)
         {
             VSOutput.Message($"VSEXT(VSOutput.cs) api 응답에 문제가 있습니다.: {ex.Message}");
+            VS_extendPackage._VS_extendPackage.main._ExceptionManager.Throw();
             // JSON 파싱 실패 시 기본 응답 생성
             return new GeminiResponse
             {

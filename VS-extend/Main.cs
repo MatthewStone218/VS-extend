@@ -77,6 +77,7 @@ namespace VS_extend
                         catch (Exception e)
                         {
                             VSOutput.Message($"VSEXT(Main.cs) 파일 저장에 따른 API호출에 문제가 발생했습니다. {e}");
+                            VS_extendPackage._VS_extendPackage.main._ExceptionManager.Throw();
                         }
                     });
                 }
@@ -89,6 +90,7 @@ namespace VS_extend
                 catch (Exception e)
                 {
                     VSOutput.Message($"VSEXT(Main.cs) 삭제된 파일을 스캔하는 과정에서 예외가 발생했습니다. {e}");
+                    VS_extendPackage._VS_extendPackage.main._ExceptionManager.Throw();
                 }
             }, null, 0, 3000);
         }

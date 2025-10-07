@@ -1,8 +1,9 @@
-﻿using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
+﻿using System;
 using System.Threading.Tasks;
-using System;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Threading;
+using VS_extend.VSExtension;
 
 namespace VS_extend
 {
@@ -21,6 +22,7 @@ namespace VS_extend
                 catch (Exception e)
                 {
                     System.Diagnostics.Debug.WriteLine(e.Message);
+                    VS_extendPackage._VS_extendPackage.main._ExceptionManager.Throw();
                 }
             });
         }
