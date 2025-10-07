@@ -7,10 +7,10 @@ using VS_extend.VSExtension;
 
 public class EnvironmentLoader
 {
-    private VS_extendPackage _VS_extendPackage;
-    public EnvironmentLoader(VS_extendPackage __VS_extendPackage)
+    private IVS_extendPackage _IVS_extendPackage;
+    public EnvironmentLoader(IVS_extendPackage __IVS_extendPackage)
     {
-        _VS_extendPackage = __VS_extendPackage;
+        _IVS_extendPackage = __IVS_extendPackage;
     }
     // DTE로 가져온 프로젝트 폴더 경로를 인자로 받습니다.
     public Dictionary<string, string> LoadEnvFile(string projectPath)
@@ -60,8 +60,8 @@ public class EnvironmentLoader
         catch (Exception ex)
         {
             // 파일 읽기 중 발생한 오류 처리
-            _VS_extendPackage.main._VSOutput.Message($"VSEXT(EnvironmentLoader.cs) .env 파일을 읽는 중 오류 발생: {ex.Message}");
-            _VS_extendPackage._ExceptionManager.Throw();
+            _IVS_extendPackage.main._VSOutput.Message($"VSEXT(EnvironmentLoader.cs) .env 파일을 읽는 중 오류 발생: {ex.Message}");
+            _IVS_extendPackage._ExceptionManager.Throw();
         }
 
         return environmentVariables;

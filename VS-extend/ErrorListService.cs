@@ -12,14 +12,14 @@ public class ErrorListService : IDisposable
     // ErrorListProvider 인스턴스는 한 번만 생성하여 재사용합니다.
     private readonly ErrorListProvider _errorProvider;
     private readonly JoinableTaskFactory _jtf;
-	private VS_extendPackage _VS_extendPackage;
+	private IVS_extendPackage _IVS_extendPackage;
 
-	public ErrorListService(VS_extendPackage __VS_extendPackage, JoinableTaskFactory jtf)
+	public ErrorListService(IVS_extendPackage __IVS_extendPackage, JoinableTaskFactory jtf)
 	{
-		_VS_extendPackage = __VS_extendPackage;
+		_IVS_extendPackage = __IVS_extendPackage;
 		// ErrorListProvider 초기화
 		// 서비스 프로바이더는 보통 Package 클래스 인스턴스입니다.
-		_errorProvider = new ErrorListProvider(__VS_extendPackage);
+		_errorProvider = new ErrorListProvider(__IVS_extendPackage.Provider);
         _jtf = jtf;
     }
 
@@ -30,7 +30,7 @@ public class ErrorListService : IDisposable
     /// <param name="errors">키: 파일 경로, 값: 오류 메시지</param>
     public async Task ChangeAsync(Dictionary<string, string> errors)
     {
-        _VS_extendPackage._ExceptionManager.Throw();
+        _IVS_extendPackage._ExceptionManager.Throw();
         await _jtf.SwitchToMainThreadAsync();
 
         // 기존에 이 Provider가 등록했던 모든 오류 항목을 지웁니다.

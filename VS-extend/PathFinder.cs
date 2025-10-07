@@ -10,16 +10,16 @@ using VS_extend.VSExtension;
 public class PathFinder
 {
     private readonly JoinableTaskFactory _jtf;
-	private VS_extendPackage _VS_extendPackage;
-	public PathFinder(VS_extendPackage __VS_extendPackage, JoinableTaskFactory jtf)
+	private IVS_extendPackage _IVS_extendPackage;
+	public PathFinder(IVS_extendPackage __IVS_extendPackage, JoinableTaskFactory jtf)
 	{
-		_VS_extendPackage = __VS_extendPackage;
+		_IVS_extendPackage = __IVS_extendPackage;
 		_jtf = jtf;
     }
     // DTE 객체를 받아서 활성 프로젝트의 경로를 반환하는 메서드
     public async Task<string> GetActiveProjectPathAsync(DTE dte)
     {
-        _VS_extendPackage._ExceptionManager.Throw();
+        _IVS_extendPackage._ExceptionManager.Throw();
         await _jtf.SwitchToMainThreadAsync();
 
         try
@@ -40,8 +40,8 @@ public class PathFinder
         }
         catch (Exception ex)
         {
-            _VS_extendPackage.main._VSOutput.Message($"VSEXT(PathFinder.cs) 프로젝트 경로 획득 오류: {ex.Message}");
-            _VS_extendPackage._ExceptionManager.Throw();
+            _IVS_extendPackage.main._VSOutput.Message($"VSEXT(PathFinder.cs) 프로젝트 경로 획득 오류: {ex.Message}");
+            _IVS_extendPackage._ExceptionManager.Throw();
         }
 
         return string.Empty; // 경로를 찾지 못했으면 빈 문자열 반환

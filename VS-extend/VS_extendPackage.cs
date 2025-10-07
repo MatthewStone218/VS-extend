@@ -17,35 +17,43 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [ProvideAutoLoad(UIContextGuids80.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
     [Guid("705E62DA-DCD2-402B-96DA-4D65A7B6244A")]
-    public sealed class VS_extendPackage : AsyncPackage
+    public sealed class VS_extendPackage : AsyncPackage, IVS_extendPackage
     {
-        public Main main = null;
-        public CancellationToken _CancellationToken;
-        public IProgress<ServiceProgressData> _Progress;
-        public ExceptionManager _ExceptionManager;
-        public Main M => main;
-        private JoinableTaskFactory _jtf;
+        public Main _main;
+        public CancellationToken __CancellationToken;
+        public IProgress<ServiceProgressData> __Progress;
+        public ExceptionManager __ExceptionManager;
+        private JoinableTaskFactory __jtf;
+
+        public ExceptionManager _ExceptionManager => __ExceptionManager;
+        public JoinableTaskFactory _jtf => __jtf;
+        public CancellationToken _CancellationToken => __CancellationToken;
+        public IProgress<ServiceProgressData> _Progress => __Progress;
+        public Main main { get => _main; set => _main = value; }
+        public System.IServiceProvider Provider => this;
+        public IAsyncServiceProvider AsyncProvider => this;
 
         // Package가 로드될 때(초기화) 실행되는 메서드
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             await base.InitializeAsync(cancellationToken, progress);
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
-            _CancellationToken = cancellationToken;
-            _Progress = progress;
-            _jtf = JoinableTaskFactory;
-            _ExceptionManager = new ExceptionManager(this, _jtf);
+            __CancellationToken = cancellationToken;
+            __Progress = progress;
+            __jtf = JoinableTaskFactory;
+            __ExceptionManager = new ExceptionManager(this, _jtf);
             main = new Main(this, _CancellationToken, _Progress, _jtf);
             JoinableTask jt = _jtf.RunAsync(async () => await main.InitAsync());
         }
-
-        public void StartExtension()
+        
+        public async Task StartExtensionAsync()
         {
-            _ExceptionManager = new ExceptionManager(this, _jtf);
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(_CancellationToken);
+            __ExceptionManager = new ExceptionManager(this, _jtf);
             main = new Main(this, _CancellationToken, _Progress, _jtf);
             JoinableTask jt = _jtf.RunAsync(async () => await main.InitAsync());
         }
-
+        
         public void StopExtension()
         {
             if (main != null)
@@ -65,5 +73,16 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
             }
         }
         // VS_extendPackage.cs 파일 내부에 있는 ShowMessageBox 메서드를 다음으로 교체
+    }
+
+    public interface IVS_extendPackage
+    {
+        Task StartExtensionAsync();
+        void StopExtension();
+        ExceptionManager _ExceptionManager { get; }
+        JoinableTaskFactory _jtf { get; }
+        Main main { get; set; }
+        Task<object> GetServiceAsync(Type serviceType);
+        IServiceProvider Provider { get; }
     }
 }

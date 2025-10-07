@@ -19,10 +19,10 @@ namespace VS_extend
         public CancellationToken CT;
         private List<Task> TaskList = new List<Task>();
         private bool isCanceling = false;
-		private VS_extendPackage _VS_extendPackage;
-		public ExceptionManager(VS_extendPackage __VS_extendPackage, JoinableTaskFactory jtf)
+		private IVS_extendPackage _IVS_extendPackage;
+		public ExceptionManager(IVS_extendPackage __IVS_extendPackage, JoinableTaskFactory jtf)
 		{
-			_VS_extendPackage = __VS_extendPackage;
+			_IVS_extendPackage = __IVS_extendPackage;
 			_jtf = jtf;
             CreateNewCTS();
             StartObserving();
@@ -63,7 +63,7 @@ namespace VS_extend
                 if(isCanceling && TaskList.Count == 0)
                 {
                     CTS.Dispose();
-                    _VS_extendPackage.StopExtension();
+                    _IVS_extendPackage.StopExtension();
                 }
             }
         }

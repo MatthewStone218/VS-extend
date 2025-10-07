@@ -19,11 +19,11 @@ public class GeminiFeedbackService
 {
     private readonly HttpClient _httpClient;
     private readonly string _model = "gemini-2.5-flash"; // 사용할 모델 지정
-    private VS_extendPackage _VS_extendPackage;
+    private IVS_extendPackage _IVS_extendPackage;
 
-    public GeminiFeedbackService(VS_extendPackage __VS_extendPackage, string apiKey)
+    public GeminiFeedbackService(IVS_extendPackage __IVS_extendPackage, string apiKey)
     {
-        _VS_extendPackage = __VS_extendPackage;
+        _IVS_extendPackage = __IVS_extendPackage;
         _httpClient = new HttpClient();
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         _httpClient.DefaultRequestHeaders.Add("x-goog-api-key", apiKey);
@@ -32,7 +32,7 @@ public class GeminiFeedbackService
     public async Task<GeminiResponse> GetFeedbackAsync(
         string promptContent)
     {
-        _VS_extendPackage._ExceptionManager.Throw();
+        _IVS_extendPackage._ExceptionManager.Throw();
         string systemPrompt = $"아래 코드가 표준적인 윈도우, 리눅스 서버 환경에 동시에 적합한지 확인해줘. 표준적이지 않거나 둘 중 한 플랫폼에만 종속된 내용이 있다면 문제가 있는거야. 만약 문자게 있다면 problem_found를 true로, 없다면 false로 반환해줘. message에는 어느 부분이 문제인지 아주 간단하게 설명해줘. 문제가 없다면 그냥 \"아무 문제도 발견되지 않았습니다.\"라고 써줘.";
 
         var requestBody = new
@@ -68,8 +68,8 @@ public class GeminiFeedbackService
         }
         catch (HttpRequestException ex)
         {
-            _VS_extendPackage.main._VSOutput.Message($"VSEXT(VSOutput.cs) API 요청에 실패했습니다.: {ex.Message}");
-            _VS_extendPackage._ExceptionManager.Throw();
+            _IVS_extendPackage.main._VSOutput.Message($"VSEXT(VSOutput.cs) API 요청에 실패했습니다.: {ex.Message}");
+            _IVS_extendPackage._ExceptionManager.Throw();
             // 요청 실패 시 기본 응답 생성
             return new GeminiResponse
             {
@@ -87,8 +87,8 @@ public class GeminiFeedbackService
         }
         catch (JsonException ex)
         {
-            _VS_extendPackage.main._VSOutput.Message($"VSEXT(VSOutput.cs) api 응답에 문제가 있습니다.: {ex.Message}");
-            _VS_extendPackage._ExceptionManager.Throw();
+            _IVS_extendPackage.main._VSOutput.Message($"VSEXT(VSOutput.cs) api 응답에 문제가 있습니다.: {ex.Message}");
+            _IVS_extendPackage._ExceptionManager.Throw();
             // JSON 파싱 실패 시 기본 응답 생성
             return new GeminiResponse
             {

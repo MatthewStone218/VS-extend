@@ -23,12 +23,12 @@ namespace VS_extend
         public Scheduler FileScanScheduler;
         public VSOutput _VSOutput;
         public JoinableTaskFactory _jtf;
-        private VS_extendPackage _VS_extendPackage;
-        public Main(VS_extendPackage __VS_extendPackage, CancellationToken cancellationToken, IProgress<ServiceProgressData> progress, JoinableTaskFactory jtf)
+        private IVS_extendPackage _IVS_extendPackage;
+        public Main(VS_extendPackage __IVS_extendPackage, CancellationToken cancellationToken, IProgress<ServiceProgressData> progress, JoinableTaskFactory jtf)
         {
             _CancellationToken = cancellationToken;
             _Progress = progress;
-            _VS_extendPackage = __VS_extendPackage;
+            _IVS_extendPackage = __IVS_extendPackage;
             _jtf = jtf;
         }
         
@@ -39,24 +39,24 @@ namespace VS_extend
             await _jtf.SwitchToMainThreadAsync(_CancellationToken);
 
             // 2. DTE 서비스 가져오기
-            DTE _DTE = await _VS_extendPackage.GetServiceAsync(typeof(DTE)) as DTE;
+            DTE _DTE = await _IVS_extendPackage.GetServiceAsync(typeof(DTE)) as DTE;
             
             if (_DTE == null) return;
 
             // 3. 현재 프로젝트 경로를 가져와 저장
-            PathFinder pathFinder = new PathFinder(_VS_extendPackage, _jtf);
-            EnvironmentLoader environmentLoader = new EnvironmentLoader(_VS_extendPackage);
-            ErrorListService errorListService = new ErrorListService(_VS_extendPackage, _jtf);
-            _FileStatusManager = new FileStatusManager(_VS_extendPackage, errorListService, _jtf);
-            _DocumentEventHandler = new DocumentEventHandler(_VS_extendPackage, _jtf);
-            _VSOutput = new VSOutput(_VS_extendPackage, _jtf);
+            PathFinder pathFinder = new PathFinder(_IVS_extendPackage, _jtf);
+            EnvironmentLoader environmentLoader = new EnvironmentLoader(_IVS_extendPackage);
+            ErrorListService errorListService = new ErrorListService(_IVS_extendPackage, _jtf);
+            _FileStatusManager = new FileStatusManager(_IVS_extendPackage, errorListService, _jtf);
+            _DocumentEventHandler = new DocumentEventHandler(_IVS_extendPackage, _jtf);
+            _VSOutput = new VSOutput(_IVS_extendPackage, _jtf);
 
             string ProjectPath = await pathFinder.GetActiveProjectPathAsync(_DTE);
             environmentLoader.CheckAndInitEnvFile(Path.Combine(ProjectPath, ".env"));
             Dictionary<string, string> variable = environmentLoader.LoadEnvFile(Path.Combine(ProjectPath, ".env"));
             string APIKey = variable.TryGetValue("API_KEY", out string apiKey) ? apiKey : null;
             if (APIKey == null || APIKey == "") return;
-            _GeminiService = new GeminiFeedbackService(_VS_extendPackage, APIKey);
+            _GeminiService = new GeminiFeedbackService(_IVS_extendPackage, APIKey);
 
             _DocumentEventHandler.Init();
 
@@ -68,7 +68,7 @@ namespace VS_extend
                     JoinableTask jt = _jtf.RunAsync(async () => {
                         try
                         {
-                            _VS_extendPackage._ExceptionManager.Throw();
+                            _IVS_extendPackage._ExceptionManager.Throw();
                             var response = await _GeminiService.GetFeedbackAsync(fileContent);
                             bool problemFound = response.ProblemFound;
                             string message = response.Message;
@@ -76,11 +76,11 @@ namespace VS_extend
                         }
                         catch (Exception e)
                         {
-                            _VS_extendPackage.main._VSOutput.Message($"VSEXT(Main.cs) 파일 저장에 따른 API호출에 문제가 발생했습니다. {e}");
-                            _VS_extendPackage._ExceptionManager.Throw();
+                            _IVS_extendPackage.main._VSOutput.Message($"VSEXT(Main.cs) 파일 저장에 따른 API호출에 문제가 발생했습니다. {e}");
+                            _IVS_extendPackage._ExceptionManager.Throw();
                         }
                     });
-                    _VS_extendPackage._ExceptionManager.Register(jt.Task);
+                    _IVS_extendPackage._ExceptionManager.Register(jt.Task);
                 }
             };
             FileScanScheduler = new Scheduler(() => {
@@ -90,8 +90,8 @@ namespace VS_extend
                 }
                 catch (Exception e)
                 {
-                    _VS_extendPackage.main._VSOutput.Message($"VSEXT(Main.cs) 삭제된 파일을 스캔하는 과정에서 예외가 발생했습니다. {e}");
-                    _VS_extendPackage._ExceptionManager.Throw();
+                    _IVS_extendPackage.main._VSOutput.Message($"VSEXT(Main.cs) 삭제된 파일을 스캔하는 과정에서 예외가 발생했습니다. {e}");
+                    _IVS_extendPackage._ExceptionManager.Throw();
                 }
             }, null, 0, 3000);
             FileScanScheduler.StartTask();

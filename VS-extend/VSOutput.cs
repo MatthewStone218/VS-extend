@@ -10,12 +10,12 @@ namespace VS_extend
     public class VSOutput
     {
         public JoinableTaskFactory _jtf;
-        private VS_extendPackage _VS_extendPackage;
+        private IVS_extendPackage _IVS_extendPackage;
         // 이 메서드는 async Task를 반환하는 메서드 내에서 호출되어야 합니다.
-        public VSOutput(VS_extendPackage __VS_extendPackage, JoinableTaskFactory jtf)
+        public VSOutput(IVS_extendPackage __IVS_extendPackage, JoinableTaskFactory jtf)
         {
             _jtf = jtf;
-            _VS_extendPackage = __VS_extendPackage;
+            _IVS_extendPackage = __IVS_extendPackage;
         }
         public void Message(string message)
         {
@@ -28,7 +28,7 @@ namespace VS_extend
                 catch (Exception e)
                 {
                     System.Diagnostics.Debug.WriteLine(e.Message);
-                    _VS_extendPackage._ExceptionManager.Throw();
+                    _IVS_extendPackage._ExceptionManager.Throw();
                 }
             });
         }
