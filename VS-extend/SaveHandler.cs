@@ -2,27 +2,33 @@
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Threading;
+using Task = System.Threading.Tasks.Task;
 
 // IVsRunningDocTableEvents 인터페이스를 구현합니다.
 public class DocumentSaveHandler : IVsRunningDocTableEvents
 {
     private readonly JoinableTaskFactory _jtf;
-    private readonly IVsRunningDocumentTable _rdt;
+    private IVsRunningDocumentTable _rdt;
     private uint _eventCookie;
+    private readonly System.IServiceProvider _serviceProvider;
     public Action<Dictionary<string, object>> CallbackAfterSave { get; set; }
 
-    public DocumentSaveHandler(IServiceProvider serviceProvider, JoinableTaskFactory jtf)
+    public DocumentSaveHandler(System.IServiceProvider serviceProvider, JoinableTaskFactory jtf)
     {
+        _serviceProvider = serviceProvider;
         _jtf = jtf;
+        JoinableTask jt = _jtf.RunAsync(async () => await InitAsync());
+    }
+    private async Task InitAsync()
+    {
         await _jtf.SwitchToMainThreadAsync();
-        // RDT 접근은 UI 스레드가 필요합니다.
-        ThreadHelper.ThrowIfNotOnUIThread();
 
         // RDT 서비스 가져오기
-        _rdt = serviceProvider.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
+        _rdt = _serviceProvider.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
 
         if (_rdt != null)
         {
@@ -30,7 +36,6 @@ public class DocumentSaveHandler : IVsRunningDocTableEvents
             _rdt.AdviseRunningDocTableEvents(this, out _eventCookie);
         }
     }
-
     // 문서가 저장된 후 호출되는 핵심 메서드
     public int OnAfterSave(uint docCookie)
     {
