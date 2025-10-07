@@ -1,0 +1,50 @@
+﻿using Microsoft.VisualStudio.Shell;
+using System.ComponentModel.Design;
+using Microsoft.VisualStudio.Threading;
+using Task = System.Threading.Tasks.Task;
+
+// VS_extend 네임스페이스에 추가
+namespace VS_extend.VSExtension
+{
+    internal sealed class VSECommand
+    {
+        // VSCT 파일에서 정의된 Command ID와 GUID를 여기에 정의해야 합니다.
+        // 예를 들어, .vsct에 다음과 같이 정의했다면:
+        // <GuidSymbol name="guidVSExtendCommandSet" value="{...}" />
+        // <IDSymbol name="VSECommandId" value="0x0100" />
+        public static readonly Guid CommandSet = new Guid("705E62DA-DCD2-402B-96DA-4D65A7B6244A"); // ⭐️ VSCT의 guidVSExtendCommandSet GUID
+        public const int CommandId = 0x0100; // ⭐️ VSCT의 VSECommandId 값
+
+        private readonly AsyncPackage _package;
+        
+        // 이 명령을 처리하는 코드는 UI 스레드에서 시작되어야 합니다.
+        public static async Task InitializeAsync(AsyncPackage package)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
+
+            IMenuCommandService commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as IMenuCommandService;
+            
+            if (commandService != null)
+            {
+                CommandID menuCommandID = new CommandID(CommandSet, CommandId);
+                OleMenuCommand menuItem = new OleMenuCommand(new EventHandler(Execute), menuCommandID);
+                commandService.AddCommand(menuItem);
+            }
+        }
+
+        // ⭐️ 버튼 클릭 시 실행될 메서드
+        private void Execute(object sender, EventArgs e)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            
+            // 여기서 Main 클래스의 InitAsync()를 호출하여 확장을 시작합니다.
+            // Main.InitAsync는 패키지 초기화 시 이미 호출되었으므로,
+            // 여기서는 확장의 메인 기능을 다시 실행하거나 토글하는 로직을 넣어야 합니다.
+            
+            // 예: Main 클래스 인스턴스에 접근하여 특정 액션을 실행
+            // (Package에 Main 인스턴스를 필드로 저장해두었다고 가정)
+            
+            // VSOutput.OutputAndShowPaneAsync("VSE 버튼이 클릭되었습니다!").Forget();
+        }
+    }
+}

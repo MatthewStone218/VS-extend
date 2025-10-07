@@ -22,21 +22,23 @@ namespace VS_extend
         public DocumentEventHandler _DocumentEventHandler;
         public GeminiFeedbackService _GeminiService;
         public Scheduler FileScanScheduler;
-        public Main(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress, VS_extendPackage vsExtendPackage)
+        public JoinableTaskFactory _jtf;
+        public Main(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress, VS_extendPackage vsExtendPackage, JoinableTaskFactory jtf)
         {
             _CancellationToken = cancellationToken;
             _Progress = progress;
             _VsExtendPackage = vsExtendPackage;
+            _jtf = jtf;
         }
-
+        JoinableTaskFactory jtf = _VsExtendPackage.JoinableTaskFactory;
         public async Task InitAsync()
         {
+            //로거
+            VSOutput._jtf = _jtf;
+
             // 1. UI 스레드 전환 요청
             // DTE 서비스에 접근하려면 반드시 UI 스레드(Main Thread)로 전환해야 합니다.
-            JoinableTaskFactory jtf = _VsExtendPackage.JoinableTaskFactory;
-            await jtf.SwitchToMainThreadAsync(_CancellationToken);
-
-            VSOutput._jtf = jtf;
+            await _jtf.SwitchToMainThreadAsync(_CancellationToken);
 
             // 2. DTE 서비스 가져오기
             DTE _DTE = await _VsExtendPackage.GetServiceAsync(typeof(DTE)) as DTE;
