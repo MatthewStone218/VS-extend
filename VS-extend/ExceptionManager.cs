@@ -17,6 +17,7 @@ namespace VS_extend
         public CancellationTokenSource CTS;
         public CancellationToken CT;
         private List<Task> TaskList = new List<Task>();
+        private bool isCanceling = false;
         public ExceptionManager(JoinableTaskFactory jtf)
         {
             _jtf = jtf;
@@ -54,11 +55,13 @@ namespace VS_extend
                 if (finishedTask.IsFaulted)
                 {
                     CTS.Cancel();
+                    isCanceling = true;
                 }
-                if(TaskList.Count == 0)
+                if(isCanceling && TaskList.Count == 0)
                 {
                     CTS.Dispose();
                     CreateNewCTS();
+                    isCanceling = false;
                 }
             }
         }
