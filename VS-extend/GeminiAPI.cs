@@ -83,4 +83,9 @@ public class GeminiFeedbackService
 
         return parsedResponse;
     }
+
+    public void Dispose()
+    {
+        _httpClient.Dispose();
+    }
 }

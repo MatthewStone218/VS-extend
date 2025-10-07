@@ -25,4 +25,9 @@ public class Scheduler
     {
         _timer?.Dispose();
     }
+
+    public void Dispose()
+    {
+        StopTask();
+    }
 }
