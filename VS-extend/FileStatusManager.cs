@@ -28,6 +28,8 @@ namespace VS_extend
             {
                 Files.Remove(path);
             }
+            ApplyErrorList();
+
         }
         public void CleanUpNonExistentFiles(Dictionary<string, string> files)
         {
