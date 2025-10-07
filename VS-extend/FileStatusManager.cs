@@ -29,12 +29,11 @@ namespace VS_extend
                 Files.Remove(path);
             }
             ApplyErrorList();
-
         }
-        public void CleanUpNonExistentFiles(Dictionary<string, string> files)
+        public void CleanUpNonExistentFiles()
         {
             var keysToRemove = new List<string>();
-            foreach (var entry in files)
+            foreach (var entry in Files)
             {
                 string filePath = entry.Key;
                 if (!File.Exists(filePath))
@@ -45,7 +44,7 @@ namespace VS_extend
 
             foreach (string key in keysToRemove)
             {
-                files.Remove(key);
+                Files.Remove(key);
             }
 
             if (keysToRemove.Count > 0)

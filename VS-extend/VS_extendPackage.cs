@@ -20,7 +20,7 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
         public string ProjectPath = null;
         public DTE _DTE = null;
         public string APIKey = null;
-        private DocumentEventHandler _saveHandler;
+        private DocumentEventHandler _documentEventHandler;
 
         // Package가 로드될 때(초기화) 실행되는 메서드
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
@@ -44,8 +44,8 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
             ErrorListService errorListService = new ErrorListService(this, jtf);
             FileStatusManager fileStatusManager = new FileStatusManager(errorListService, jtf);
 
-            _saveHandler = new DocumentEventHandler(this, jtf);
-            _saveHandler.CallbackAfterSave = (args) =>
+            _documentEventHandler = new DocumentEventHandler(this, jtf);
+            _documentEventHandler.CallbackAfterSave = (args) =>
             {
                 if (APIKey == null) return;
                 if (args.TryGetValue("fileContent", out object fileContentObj) && fileContentObj is string fileContent && args.TryGetValue("filePath", out object filePathObject) && filePathObject is string filePath)
@@ -59,6 +59,7 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
                     });
                 }
             };
+            Scheduler scheduler = new Scheduler((obj) => fileStatusManager.CleanUpNonExistentFiles());
         }
 
         // Package가 언로드될 때 리소스를 정리합니다.
@@ -73,11 +74,11 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
                     // Managed Resources (관리되는 리소스, 즉 C# 객체들)를 정리합니다.
 
                     // 1. DocumentSaveHandler의 Dispose 메서드를 호출하여 RDT 등록을 해제합니다.
-                    if (_saveHandler != null)
+                    if (_documentEventHandler != null)
                     {
                         // RDT Unadvise는 UI 스레드에서만 가능합니다.
-                        _saveHandler.Dispose();
-                        _saveHandler = null;
+                        _documentEventHandler.Dispose();
+                        _documentEventHandler = null;
                     }
 
                     // 2. 다른 IDisposable 객체들을 여기서 정리합니다.
