@@ -26,7 +26,7 @@ namespace VS_extend
             _VsExtendPackage = vsExtendPackage;
         }
 
-        public async void InitAsync()
+        public async Task InitAsync()
         {
             // 1. UI 스레드 전환 요청
             // DTE 서비스에 접근하려면 반드시 UI 스레드(Main Thread)로 전환해야 합니다.

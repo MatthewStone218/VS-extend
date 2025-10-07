@@ -25,51 +25,8 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
         // Package가 로드될 때(초기화) 실행되는 메서드
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            // 1. UI 스레드 전환 요청
-            // DTE 서비스에 접근하려면 반드시 UI 스레드(Main Thread)로 전환해야 합니다.
-            JoinableTaskFactory jtf = this.JoinableTaskFactory;
-            await jtf.SwitchToMainThreadAsync(cancellationToken);
-
-            // 2. DTE 서비스 가져오기
-            DTE _DTE = await GetServiceAsync(typeof(DTE)) as DTE;
-
-            if (_DTE == null) return;
-
-            // 3. 현재 프로젝트 경로를 가져와 저장
-            PathFinder pathFinder = new PathFinder(jtf);
-            string ProjectPath = await pathFinder.GetActiveProjectPathAsync(_DTE);
-            EnvironmentLoader.CheckAndInitEnvFile(Path.Combine(ProjectPath, ".env"));
-            Dictionary<string,string> variable = EnvironmentLoader.LoadEnvFile(Path.Combine(ProjectPath, ".env"));
-            APIKey = variable.TryGetValue("API_KEY", out string apiKey) ? apiKey : null;
-            if (APIKey == null || APIKey == "") return;
-
-            ErrorListService errorListService = new ErrorListService(this, jtf);
-            FileStatusManager fileStatusManager = new FileStatusManager(errorListService, jtf);
-
-            _documentEventHandler = new DocumentEventHandler(this, jtf);
-            _documentEventHandler.CallbackAfterSave = (args) =>
-            {
-                if (args.TryGetValue("fileContent", out object fileContentObj) && fileContentObj is string fileContent && args.TryGetValue("filePath", out object filePathObject) && filePathObject is string filePath)
-                {
-                    GeminiFeedbackService geminiService = new GeminiFeedbackService(APIKey);
-                    JoinableTask jt = jtf.RunAsync(async () => { 
-                        var response = await geminiService.GetFeedbackAsync(fileContent);
-                        bool problemFound = response.ProblemFound;
-                        string message = response.Message;
-                        fileStatusManager.SavedFile(filePath, problemFound, message);
-                    });
-                }
-            };
-            Scheduler scheduler = new Scheduler(() => {
-                try
-                {
-                    fileStatusManager.CleanUpNonExistentFiles();
-                }
-                catch (Exception e)
-                {
-                    System.Diagnostics.Debug.WriteLine(e.Message);
-                }
-            },null,0,3000);
+            Main main = new Main(cancellationToken, progress, this);
+            await main.InitAsync();
         }
 
         // Package가 언로드될 때 리소스를 정리합니다.
