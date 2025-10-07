@@ -19,11 +19,11 @@ namespace VS_extend
         private Dictionary<string, string> Files = new Dictionary<string, string>{ };//path, error message
         public void SavedFile(string path, bool problem_found, string message)
         {
-            if(!(path is string && problem_found is bool)){ return; }
             if (problem_found)
             {
-                Files.Add(path, message);
-            } else
+                Files[path] = message;
+            }
+            else
             {
                 Files.Remove(path);
             }
