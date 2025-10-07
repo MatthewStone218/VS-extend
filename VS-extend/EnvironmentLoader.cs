@@ -16,8 +16,6 @@ public class EnvironmentLoader
         // 파일이 존재하는지 확인합니다.
         if (!File.Exists(envFilePath))
         {
-            System.Diagnostics.Debug.WriteLine($"[ENV] .env 파일을 경로에서 찾을 수 없습니다: {envFilePath}");
-            File.WriteAllText(envFilePath, "API_KEY=", Encoding.UTF8);
             return environmentVariables; // 빈 딕셔너리 반환
         }
 
