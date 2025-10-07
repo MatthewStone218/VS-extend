@@ -97,9 +97,9 @@ namespace VS_extend
         public async Task DisposeAsync()
         {
             _FileStatusManager?.Dispose();
-            await _DocumentEventHandler?.DisposeAsync();
             _GeminiService?.Dispose();
             FileScanScheduler?.Dispose();
+            await _DocumentEventHandler?.DisposeAsync();
         }
     }
 }
