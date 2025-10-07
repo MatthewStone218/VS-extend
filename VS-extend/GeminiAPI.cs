@@ -65,6 +65,20 @@ public class GeminiFeedbackService
 
         var rawResponse = await response.Content.ReadAsStringAsync();
 
+        try { 
+            // 응답이 JSON 형식인지 확인
+            var jsonCheck = JsonConvert.DeserializeObject(rawResponse);
+        }
+        catch (JsonException ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"api 응답에 문제가 있습니다.: {ex.Message}");
+            // JSON 파싱 실패 시 기본 응답 생성
+            return new GeminiResponse
+            {
+                ProblemFound = false,
+                Message = "응답을 JSON으로 파싱하는 데 실패했습니다."
+            };
+        }
         var parsedResponse = JsonConvert.DeserializeObject<GeminiResponse>(rawResponse);
 
         return parsedResponse;
