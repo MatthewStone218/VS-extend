@@ -20,7 +20,7 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
         public string ProjectPath = null;
         public DTE _DTE = null;
         public string APIKey = null;
-        private DocumentSaveHandler _saveHandler;
+        private DocumentEventHandler _saveHandler;
 
         // Package가 로드될 때(초기화) 실행되는 메서드
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
@@ -44,7 +44,7 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
             ErrorListService errorListService = new ErrorListService(this, jtf);
             FileStatusManager fileStatusManager = new FileStatusManager(errorListService, jtf);
 
-            _saveHandler = new DocumentSaveHandler(this, jtf);
+            _saveHandler = new DocumentEventHandler(this, jtf);
             _saveHandler.CallbackAfterSave = (args) =>
             {
                 if (APIKey == null) return;
