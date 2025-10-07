@@ -22,7 +22,7 @@ namespace VS_extend
             CreateNewCTS();
             StartObserving();
         }
-        public void Throw()
+        public void Cancel()
         {
             CTS.Cancel();
         }

@@ -22,7 +22,7 @@ namespace VS_extend
                 catch (Exception e)
                 {
                     System.Diagnostics.Debug.WriteLine(e.Message);
-                    VS_extendPackage._VS_extendPackage.main._ExceptionManager.Throw();
+                    VS_extendPackage._VS_extendPackage.main._ExceptionManager.Cancel();
                 }
             });
         }

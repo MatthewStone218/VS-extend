@@ -38,7 +38,7 @@ public class PathFinder
         catch (Exception ex)
         {
             VSOutput.Message($"VSEXT(PathFinder.cs) 프로젝트 경로 획득 오류: {ex.Message}");
-            VS_extendPackage._VS_extendPackage.main._ExceptionManager.Throw();
+            VS_extendPackage._VS_extendPackage.main._ExceptionManager.Cancel();
         }
 
         return string.Empty; // 경로를 찾지 못했으면 빈 문자열 반환

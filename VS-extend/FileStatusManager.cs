@@ -61,7 +61,7 @@ namespace VS_extend
                 catch (Exception e)
                 {
                     VSOutput.Message($"VSEXT(FileStatusManager.cs) 오류 목록을 작성하던 도중에 예외 발생 {e}");
-                    VS_extendPackage._VS_extendPackage.main._ExceptionManager.Throw();
+                    VS_extendPackage._VS_extendPackage.main._ExceptionManager.Cancel();
                 }
             }
             );
