@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "XpWGOcxQX5I=",
+  "dgSpecHash": "hMd7PdZHFNA=",
   "success": true,
   "projectFilePath": "C:\\Users\\matt\\Desktop\\working-directory\\VS-extend\\VS-extend\\VS-extend.csproj",
   "expectedPackageFiles": [
@@ -133,22 +133,5 @@
     "C:\\Users\\matt\\.nuget\\packages\\vslangproj80\\17.0.32112.339\\vslangproj80.17.0.32112.339.nupkg.sha512",
     "C:\\Users\\matt\\.nuget\\packages\\vslangproj90\\17.0.32112.339\\vslangproj90.17.0.32112.339.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1603",
-      "level": "Warning",
-      "message": "VS-extend은(는) Microsoft.VSSDK.BuildTools (>= 17.14.2117)에 종속되지만 Microsoft.VSSDK.BuildTools 17.14.2117을(를) 찾을 수 없습니다. 대신 Microsoft.VSSDK.BuildTools 17.14.2120이(가) 확인되었습니다.",
-      "projectPath": "C:\\Users\\matt\\Desktop\\working-directory\\VS-extend\\VS-extend\\VS-extend.csproj",
-      "warningLevel": 1,
-      "filePath": "C:\\Users\\matt\\Desktop\\working-directory\\VS-extend\\VS-extend\\VS-extend.csproj",
-      "libraryId": "Microsoft.VSSDK.BuildTools",
-      "targetGraphs": [
-        ".NETFramework,Version=v4.7.2",
-        ".NETFramework,Version=v4.7.2/win",
-        ".NETFramework,Version=v4.7.2/win-arm64",
-        ".NETFramework,Version=v4.7.2/win-x64",
-        ".NETFramework,Version=v4.7.2/win-x86"
-      ]
-    }
-  ]
+  "logs": []
 }

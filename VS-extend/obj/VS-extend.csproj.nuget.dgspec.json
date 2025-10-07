@@ -46,7 +46,7 @@
           "dependencies": {
             "Microsoft.VSSDK.BuildTools": {
               "target": "Package",
-              "version": "[17.14.2117, )",
+              "version": "[17.14.2120, )",
               "noWarn": [
                 "NU1604"
               ]
