@@ -60,7 +60,7 @@ namespace VS_extend
                 try { await _errorListService.ChangeAsync(Files); }
                 catch (Exception e)
                 {
-                    System.Diagnostics.Debug.WriteLine(e.Message);
+                    VSOutput.Message($"오류 목록을 작성하던 도중에 예외 발생");
                 }
             }
             );

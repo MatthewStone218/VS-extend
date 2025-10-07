@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Threading;
+using VS_extend;
 using Task = System.Threading.Tasks.Task;
 
 // IVsRunningDocTableEvents 인터페이스를 구현합니다.
@@ -79,7 +80,7 @@ public class DocumentEventHandler : IVsRunningDocTableEvents
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"파일을 읽는 중 오류 발생: {ex.Message}");
+                VSOutput.Message($"파일을 읽는 도중 문제 발생.");
             }
         }
 

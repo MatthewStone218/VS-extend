@@ -61,10 +61,17 @@ namespace VS_extend
                 {
                     _GeminiService = new GeminiFeedbackService(APIKey);
                     JoinableTask jt = jtf.RunAsync(async () => {
-                        var response = await _GeminiService.GetFeedbackAsync(fileContent);
-                        bool problemFound = response.ProblemFound;
-                        string message = response.Message;
-                        _FileStatusManager.SavedFile(filePath, problemFound, message);
+                        try
+                        {
+                            var response = await _GeminiService.GetFeedbackAsync(fileContent);
+                            bool problemFound = response.ProblemFound;
+                            string message = response.Message;
+                            _FileStatusManager.SavedFile(filePath, problemFound, message);
+                        }
+                        catch (Exception e)
+                        {
+                            VSOutput.Message($"파일 저장에 따른 API호출에 문제가 발생했습니다. {e}");
+                        }
                     });
                 }
             };
@@ -75,7 +82,7 @@ namespace VS_extend
                 }
                 catch (Exception e)
                 {
-                    System.Diagnostics.Debug.WriteLine(e.Message);
+                    VSOutput.Message($"삭제된 파일을 스캔하는 과정에서 예외가 발생했습니다. {e}");
                 }
             }, null, 0, 3000);
         }
