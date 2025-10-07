@@ -8,6 +8,7 @@ using EnvDTE;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Threading;
 using Newtonsoft.Json.Linq;
+using VS_extend.VSExtension;
 
 namespace VS_extend
 {
@@ -60,8 +61,7 @@ namespace VS_extend
                 if(isCanceling && TaskList.Count == 0)
                 {
                     CTS.Dispose();
-                    CreateNewCTS();
-                    isCanceling = false;
+                    VS_extendPackage._VS_extendPackage.StopExtension();
                 }
             }
         }
