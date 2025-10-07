@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using EnvDTE;
-using Microsoft.VisualStudio.RpcContracts.Commands;
 using Newtonsoft.Json;
 using VS_extend;
 using VS_extend.VSExtension;
@@ -25,12 +19,12 @@ public class GeminiFeedbackService
 {
     private readonly HttpClient _httpClient;
     private readonly string _model = "gemini-2.5-flash"; // 사용할 모델 지정
-	private VS_extendPackage _VS_extendPackage;
+    private VS_extendPackage _VS_extendPackage;
 
-	public GeminiFeedbackService(VS_extendPackage __VS_extendPackage, string apiKey)
-	{
-		_VS_extendPackage = __VS_extendPackage;
-		_httpClient = new HttpClient();
+    public GeminiFeedbackService(VS_extendPackage __VS_extendPackage, string apiKey)
+    {
+        _VS_extendPackage = __VS_extendPackage;
+        _httpClient = new HttpClient();
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         _httpClient.DefaultRequestHeaders.Add("x-goog-api-key", apiKey);
     }
@@ -50,9 +44,11 @@ public class GeminiFeedbackService
             generationConfig = new
             {
                 responseMimeType = "application/json",
-                responseSchema = new {
+                responseSchema = new
+                {
                     type = "OBJECT",
-                    properties = new {
+                    properties = new
+                    {
                         problem_found = new { type = "BOOLEAN", description = "os 종속적인 부분이 있는지 여부" },
                         message = new { type = "STRING", description = "문제가 있는 부분에 대한 간단한 설명" }
                     }
@@ -73,9 +69,9 @@ public class GeminiFeedbackService
         catch (HttpRequestException ex)
         {
             VSOutput.Message($"VSEXT(VSOutput.cs) API 요청에 실패했습니다.: {ex.Message}");
-			_VS_extendPackage._ExceptionManager.Throw();
-			// 요청 실패 시 기본 응답 생성
-			return new GeminiResponse
+            _VS_extendPackage._ExceptionManager.Throw();
+            // 요청 실패 시 기본 응답 생성
+            return new GeminiResponse
             {
                 ProblemFound = false,
                 Message = "API 요청에 실패했습니다."
@@ -84,7 +80,8 @@ public class GeminiFeedbackService
 
         var rawResponse = await response.Content.ReadAsStringAsync();
 
-        try { 
+        try
+        {
             // 응답이 JSON 형식인지 확인
             var jsonCheck = JsonConvert.DeserializeObject(rawResponse);
         }
