@@ -65,6 +65,7 @@ namespace VS_extend
                 }
             }
             );
+            VS_extendPackage._VS_extendPackage.main._ExceptionManager.Register(jt.Task);
         }
         public void Dispose()
         {

@@ -32,14 +32,15 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
             _CancellationToken = cancellationToken;
             _Progress = progress;
             _jtf = JoinableTaskFactory;
-            main = new Main(cancellationToken, progress, this, _jtf);
-            await main.InitAsync();
+            StartExtension();
+            await Task.Yield();
         }
 
-        public async Task StartExtensionAsync()
+        public void StartExtension()
         {
             main = new Main(_CancellationToken, _Progress, this, _jtf);
-            await main.InitAsync();
+            JoinableTask jt = _jtf.RunAsync(async () => await main.InitAsync());
+            VS_extendPackage._VS_extendPackage.main._ExceptionManager.Register(jt.Task);
         }
 
         public async Task StopExtensionAsync()
