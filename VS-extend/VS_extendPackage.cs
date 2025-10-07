@@ -17,15 +17,12 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
     [Guid("705E62DA-DCD2-402B-96DA-4D65A7B6244A")]
     public sealed class VS_extendPackage : AsyncPackage
     {
-        public string ProjectPath = null;
-        public DTE _DTE = null;
-        public string APIKey = null;
-        private DocumentEventHandler _documentEventHandler;
+        public Main main;
 
         // Package가 로드될 때(초기화) 실행되는 메서드
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            Main main = new Main(cancellationToken, progress, this);
+            main = new Main(cancellationToken, progress, this);
             await main.InitAsync();
         }
 

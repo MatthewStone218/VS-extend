@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using VS_extend;
+using VS_extend.VSExtension;
 
 public class EnvironmentLoader
 {
@@ -19,7 +21,7 @@ public class EnvironmentLoader
             return environmentVariables; // 빈 딕셔너리 반환
         }
 
-        System.Diagnostics.Debug.WriteLine($"[ENV] .env 파일 로드 시작: {envFilePath}");
+        VSOutput.Message($"[ENV] .env 파일 로드 시작: {envFilePath}");
 
         try
         {

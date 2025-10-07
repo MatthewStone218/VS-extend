@@ -2,12 +2,28 @@
 using Microsoft.VisualStudio.Shell.Interop;
 using System.Threading.Tasks;
 using System;
+using Microsoft.VisualStudio.Threading;
 
 namespace VS_extend
 {
-    class VSOutput
+    public class VSOutput
     {
+        public static JoinableTaskFactory _jtf;
         // 이 메서드는 async Task를 반환하는 메서드 내에서 호출되어야 합니다.
+        public static void Message(string message)
+        {
+            JoinableTask jt = _jtf.RunAsync(async () =>
+            {
+                try
+                {
+                    await OutputAndShowPaneAsync(message);
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.Message);
+                }
+            });
+        }
         public static async Task OutputAndShowPaneAsync(string message)
         {
             // 1. UI 스레드 보장

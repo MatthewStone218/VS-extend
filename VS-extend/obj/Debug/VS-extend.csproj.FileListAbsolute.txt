@@ -2,3 +2,17 @@ C:\Users\matt\Desktop\working-directory\VS-extend\VS-extend\obj\Debug\VS-extend.
 C:\Users\matt\Desktop\working-directory\VS-extend\VS-extend\obj\Debug\_EmptyResource.resources
 C:\Users\matt\Desktop\working-directory\VS-extend\VS-extend\obj\Debug\VS-extend.csproj.GenerateResource.cache
 C:\Users\matt\Desktop\working-directory\VS-extend\VS-extend\obj\Debug\VS-extend.csproj.CoreCompileInputs.cache
+C:\Users\matt\Desktop\working-directory\VS-extend\VS-extend\bin\Debug\VS-extend.dll
+C:\Users\matt\Desktop\working-directory\VS-extend\VS-extend\bin\Debug\VS-extend.pdb
+C:\Users\matt\Desktop\working-directory\VS-extend\VS-extend\bin\Debug\VS-extend.pkgdef
+C:\Users\matt\Desktop\working-directory\VS-extend\VS-extend\bin\Debug\VS-extend.vsix
+C:\Users\matt\Desktop\working-directory\VS-extend\VS-extend\bin\Debug\extension.vsixmanifest
+C:\Users\matt\Desktop\working-directory\VS-extend\VS-extend\bin\Debug\Newtonsoft.Json.dll
+C:\Users\matt\Desktop\working-directory\VS-extend\VS-extend\obj\Debug\VS-extend.csproj.Up2Date
+C:\Users\matt\Desktop\working-directory\VS-extend\VS-extend\obj\Debug\VS-extend.dll
+C:\Users\matt\Desktop\working-directory\VS-extend\VS-extend\obj\Debug\VS-extend.pdb
+C:\Users\matt\Desktop\working-directory\VS-extend\VS-extend\obj\Debug\VS-extend.pkgdef
+C:\Users\matt\Desktop\working-directory\VS-extend\VS-extend\obj\Debug\VS-extend.latest.pkgdef
+C:\Users\matt\Desktop\working-directory\VS-extend\VS-extend\obj\Debug\extension.vsixmanifest
+C:\Users\matt\Desktop\working-directory\VS-extend\VS-extend\obj\Debug\files.json
+C:\Users\matt\Desktop\working-directory\VS-extend\VS-extend\obj\Debug\createTemplateManifests.cache

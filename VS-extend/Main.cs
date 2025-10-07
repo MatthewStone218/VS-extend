@@ -36,6 +36,8 @@ namespace VS_extend
             JoinableTaskFactory jtf = _VsExtendPackage.JoinableTaskFactory;
             await jtf.SwitchToMainThreadAsync(_CancellationToken);
 
+            VSOutput._jtf = jtf;
+
             // 2. DTE 서비스 가져오기
             DTE _DTE = await _VsExtendPackage.GetServiceAsync(typeof(DTE)) as DTE;
 
@@ -76,6 +78,11 @@ namespace VS_extend
                     System.Diagnostics.Debug.WriteLine(e.Message);
                 }
             }, null, 0, 3000);
+        }
+
+        public async Task StopAsync()
+        {
+            await DisposeAsync();
         }
 
         public async Task DisposeAsync()
