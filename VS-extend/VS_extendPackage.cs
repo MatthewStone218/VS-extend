@@ -59,7 +59,7 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
                     });
                 }
             };
-            Scheduler scheduler = new Scheduler((obj) => fileStatusManager.CleanUpNonExistentFiles());
+            Scheduler scheduler = new Scheduler(() => fileStatusManager.CleanUpNonExistentFiles(),null,0,3000);
         }
 
         // Package가 언로드될 때 리소스를 정리합니다.
