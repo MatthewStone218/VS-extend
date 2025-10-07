@@ -65,5 +65,9 @@ namespace VS_extend
             }
             );
         }
+        public void Dispose()
+        {
+            _errorListService.Dispose();
+        }
     }
 }

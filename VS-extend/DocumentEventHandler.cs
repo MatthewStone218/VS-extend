@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
@@ -15,14 +16,14 @@ public class DocumentEventHandler : IVsRunningDocTableEvents
     private IVsRunningDocumentTable _rdt;
     private uint _eventCookie;
     private readonly System.IServiceProvider _serviceProvider;
-    private bool initialized = false;
+    private JoinableTask InitTask;
     public Action<Dictionary<string, object>> CallbackAfterSave { get; set; }
 
     public DocumentEventHandler(System.IServiceProvider serviceProvider, JoinableTaskFactory jtf)
     {
         _serviceProvider = serviceProvider;
         _jtf = jtf;
-        JoinableTask jt = _jtf.RunAsync(async () => await InitAsync());
+        InitTask = _jtf.RunAsync(async () => await InitAsync());
     }
     private async Task InitAsync()
     {
@@ -36,14 +37,16 @@ public class DocumentEventHandler : IVsRunningDocTableEvents
             // 이벤트를 RDT에 등록하고 쿠키(식별자)를 저장합니다.
             _rdt.AdviseRunningDocTableEvents(this, out _eventCookie);
         }
-
-        initialized = true;
     }
     // 문서가 저장된 후 호출되는 핵심 메서드
     public int OnAfterSave(uint docCookie)
     {
-        if (!initialized) { return VSConstants.S_OK; }
-        ThreadHelper.ThrowIfNotOnUIThread();
+        JoinableTask jt = _jtf.RunAsync(async () => await OnAfterSaveAsync(docCookie));
+        return VSConstants.S_OK;
+    }
+    public async Task<int> OnAfterSaveAsync(uint docCookie)
+    {
+        await _jtf.SwitchToMainThreadAsync();
 
         // docCookie를 사용하여 저장된 문서 정보(파일명, 경로 등)를 가져옵니다.
         IVsHierarchy pHier;
@@ -94,10 +97,9 @@ public class DocumentEventHandler : IVsRunningDocTableEvents
     public int OnAfterDocumentClose(uint docCookie) { return VSConstants.S_OK; }
 
     // RDT 이벤트 등록 해제 (리소스 정리)
-    public void Dispose()
+    public async Task DisposeAsync()
     {
-        if (!initialized) { return; }
-        ThreadHelper.ThrowIfNotOnUIThread();
+        await InitTask;
         if (_eventCookie != 0)
         {
             _rdt.UnadviseRunningDocTableEvents(_eventCookie);

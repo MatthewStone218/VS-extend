@@ -86,8 +86,6 @@ public class ErrorListService : IDisposable
     // IDisposable 구현 (리소스 정리)
     public void Dispose()
     {
-        // UI 스레드에서 Dispose가 실행되도록 보장
-        ThreadHelper.ThrowIfNotOnUIThread();
         if (_errorProvider != null)
         {
             // ErrorListProvider가 사용한 리소스를 해제합니다.

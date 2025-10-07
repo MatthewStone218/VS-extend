@@ -32,31 +32,6 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
         // Package가 언로드될 때 리소스를 정리합니다.
         protected override void Dispose(bool disposing)
         {
-            // ThreadHelper를 사용하여 UI 스레드에서 Dispose가 실행되도록 보장합니다.
-            ThreadHelper.ThrowIfNotOnUIThread();
-            try
-            {
-                if (disposing)
-                {
-                    // Managed Resources (관리되는 리소스, 즉 C# 객체들)를 정리합니다.
-
-                    // 1. DocumentSaveHandler의 Dispose 메서드를 호출하여 RDT 등록을 해제합니다.
-                    if (_documentEventHandler != null)
-                    {
-                        // RDT Unadvise는 UI 스레드에서만 가능합니다.
-                        _documentEventHandler.Dispose();
-                        _documentEventHandler = null;
-                    }
-
-                    // 2. 다른 IDisposable 객체들을 여기서 정리합니다.
-                }
-            }
-            finally
-            {
-                // Unmanaged Resources (비관리 리소스) 정리가 있다면 여기에 넣습니다.
-                // 기본 클래스의 Dispose를 반드시 호출해야 합니다.
-                base.Dispose(disposing);
-            }
         }
     }
 }

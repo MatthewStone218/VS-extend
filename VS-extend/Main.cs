@@ -20,6 +20,8 @@ namespace VS_extend
         public VS_extendPackage _VsExtendPackage;
         public FileStatusManager _FileStatusManager;
         public DocumentEventHandler _DocumentEventHandler;
+        public GeminiFeedbackService _GeminiService;
+        public Scheduler FileScanScheduler;
         public Main(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress, VS_extendPackage vsExtendPackage)
         {
             _CancellationToken = cancellationToken;
@@ -55,16 +57,16 @@ namespace VS_extend
             {
                 if (args.TryGetValue("fileContent", out object fileContentObj) && fileContentObj is string fileContent && args.TryGetValue("filePath", out object filePathObject) && filePathObject is string filePath)
                 {
-                    GeminiFeedbackService geminiService = new GeminiFeedbackService(APIKey);
+                    _GeminiService = new GeminiFeedbackService(APIKey);
                     JoinableTask jt = jtf.RunAsync(async () => {
-                        var response = await geminiService.GetFeedbackAsync(fileContent);
+                        var response = await _GeminiService.GetFeedbackAsync(fileContent);
                         bool problemFound = response.ProblemFound;
                         string message = response.Message;
                         _FileStatusManager.SavedFile(filePath, problemFound, message);
                     });
                 }
             };
-            Scheduler scheduler = new Scheduler(() => {
+            FileScanScheduler = new Scheduler(() => {
                 try
                 {
                     _FileStatusManager.CleanUpNonExistentFiles();
@@ -74,6 +76,14 @@ namespace VS_extend
                     System.Diagnostics.Debug.WriteLine(e.Message);
                 }
             }, null, 0, 3000);
+        }
+
+        public async Task DisposeAsync()
+        {
+            _FileStatusManager?.Dispose();
+            await _DocumentEventHandler?.DisposeAsync();
+            _GeminiService?.Dispose();
+            FileScanScheduler?.Dispose();
         }
     }
 }
