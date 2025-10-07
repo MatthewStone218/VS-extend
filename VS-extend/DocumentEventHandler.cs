@@ -27,12 +27,14 @@ public class DocumentEventHandler : IVsRunningDocTableEvents
         _VS_extendPackage = __VS_extendPackage;
         _serviceProvider = __VS_extendPackage;
         _jtf = jtf;
-        InitTask = _jtf.RunAsync(async () => await InitAsync());
-        _VS_extendPackage._ExceptionManager.Register(InitTask.Task);
+    }
+    public void Init()
+    {
+        JoinableTask jt = _jtf.RunAsync(async () => await InitAsync());
+        _VS_extendPackage._ExceptionManager.Register(jt.Task);
     }
     private async Task InitAsync()
     {
-        _VS_extendPackage._ExceptionManager.Throw();
         await _jtf.SwitchToMainThreadAsync();
 
         // RDT 서비스 가져오기

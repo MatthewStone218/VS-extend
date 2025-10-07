@@ -45,25 +45,26 @@ namespace VS_extend
 
             // 3. 현재 프로젝트 경로를 가져와 저장
             PathFinder pathFinder = new PathFinder(_VS_extendPackage, _jtf);
-            string ProjectPath = await pathFinder.GetActiveProjectPathAsync(_DTE);
-
+            EnvironmentLoader environmentLoader = new EnvironmentLoader(_VS_extendPackage);
+            ErrorListService errorListService = new ErrorListService(_VS_extendPackage, _jtf);
+            _FileStatusManager = new FileStatusManager(_VS_extendPackage, errorListService, _jtf);
+            _DocumentEventHandler = new DocumentEventHandler(_VS_extendPackage, _jtf);
             _VSOutput = new VSOutput(_VS_extendPackage, _jtf);
 
-            EnvironmentLoader environmentLoader = new EnvironmentLoader(_VS_extendPackage);
+            string ProjectPath = await pathFinder.GetActiveProjectPathAsync(_DTE);
             environmentLoader.CheckAndInitEnvFile(Path.Combine(ProjectPath, ".env"));
             Dictionary<string, string> variable = environmentLoader.LoadEnvFile(Path.Combine(ProjectPath, ".env"));
             string APIKey = variable.TryGetValue("API_KEY", out string apiKey) ? apiKey : null;
             if (APIKey == null || APIKey == "") return;
+            _GeminiService = new GeminiFeedbackService(_VS_extendPackage, APIKey);
 
-            ErrorListService errorListService = new ErrorListService(_VS_extendPackage, _jtf);
-            _FileStatusManager = new FileStatusManager(_VS_extendPackage, errorListService, _jtf);
+            _DocumentEventHandler.Init();
 
-            _DocumentEventHandler = new DocumentEventHandler(_VS_extendPackage, _jtf);
             _DocumentEventHandler.CallbackAfterSave = (args) =>
             {
                 if (args.TryGetValue("fileContent", out object fileContentObj) && fileContentObj is string fileContent && args.TryGetValue("filePath", out object filePathObject) && filePathObject is string filePath)
                 {
-                    _GeminiService = new GeminiFeedbackService(_VS_extendPackage, APIKey);
+
                     JoinableTask jt = _jtf.RunAsync(async () => {
                         try
                         {
