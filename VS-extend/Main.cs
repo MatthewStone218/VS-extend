@@ -43,7 +43,7 @@ namespace VS_extend
 
             // 2. DTE 서비스 가져오기
             DTE _DTE = await _VsExtendPackage.GetServiceAsync(typeof(DTE)) as DTE;
-
+            
             if (_DTE == null) return;
 
             // 3. 현재 프로젝트 경로를 가져와 저장
@@ -95,6 +95,7 @@ namespace VS_extend
                     VS_extendPackage._VS_extendPackage.main._ExceptionManager.Cancel();
                 }
             }, null, 0, 3000);
+            FileScanScheduler.StartTask();
         }
 
         public async Task StopAsync()

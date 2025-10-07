@@ -60,5 +60,6 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
                 main = null;
             }
         }
+        // VS_extendPackage.cs 파일 내부에 있는 ShowMessageBox 메서드를 다음으로 교체
     }
 }
