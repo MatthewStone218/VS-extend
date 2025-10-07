@@ -60,14 +60,14 @@ public class EnvironmentLoader
         catch (Exception ex)
         {
             // 파일 읽기 중 발생한 오류 처리
-            VSOutput.Message($"VSEXT(EnvironmentLoader.cs) .env 파일을 읽는 중 오류 발생: {ex.Message}");
+            _VS_extendPackage.main._VSOutput.Message($"VSEXT(EnvironmentLoader.cs) .env 파일을 읽는 중 오류 발생: {ex.Message}");
             _VS_extendPackage._ExceptionManager.Throw();
         }
 
         return environmentVariables;
     }
 
-    public static void CheckAndInitEnvFile(string envFilePath)
+    public void CheckAndInitEnvFile(string envFilePath)
     {
         if (!File.Exists(envFilePath))
         {

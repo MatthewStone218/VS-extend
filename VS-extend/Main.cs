@@ -21,6 +21,7 @@ namespace VS_extend
         public DocumentEventHandler _DocumentEventHandler;
         public GeminiFeedbackService _GeminiService;
         public Scheduler FileScanScheduler;
+        public VSOutput _VSOutput;
         public JoinableTaskFactory _jtf;
         private VS_extendPackage _VS_extendPackage;
         public Main(VS_extendPackage __VS_extendPackage, CancellationToken cancellationToken, IProgress<ServiceProgressData> progress, JoinableTaskFactory jtf)
@@ -33,9 +34,6 @@ namespace VS_extend
         
         public async Task InitAsync()
         {
-            //로거
-            VSOutput._jtf = _jtf;
-
             // 1. UI 스레드 전환 요청
             // DTE 서비스에 접근하려면 반드시 UI 스레드(Main Thread)로 전환해야 합니다.
             await _jtf.SwitchToMainThreadAsync(_CancellationToken);
@@ -49,8 +47,10 @@ namespace VS_extend
             PathFinder pathFinder = new PathFinder(_VS_extendPackage, _jtf);
             string ProjectPath = await pathFinder.GetActiveProjectPathAsync(_DTE);
 
-            EnvironmentLoader.CheckAndInitEnvFile(Path.Combine(ProjectPath, ".env"));
+            _VSOutput = new VSOutput(_VS_extendPackage, _jtf);
+
             EnvironmentLoader environmentLoader = new EnvironmentLoader(_VS_extendPackage);
+            environmentLoader.CheckAndInitEnvFile(Path.Combine(ProjectPath, ".env"));
             Dictionary<string, string> variable = environmentLoader.LoadEnvFile(Path.Combine(ProjectPath, ".env"));
             string APIKey = variable.TryGetValue("API_KEY", out string apiKey) ? apiKey : null;
             if (APIKey == null || APIKey == "") return;
@@ -75,7 +75,7 @@ namespace VS_extend
                         }
                         catch (Exception e)
                         {
-                            VSOutput.Message($"VSEXT(Main.cs) 파일 저장에 따른 API호출에 문제가 발생했습니다. {e}");
+                            _VS_extendPackage.main._VSOutput.Message($"VSEXT(Main.cs) 파일 저장에 따른 API호출에 문제가 발생했습니다. {e}");
                             _VS_extendPackage._ExceptionManager.Throw();
                         }
                     });
@@ -89,7 +89,7 @@ namespace VS_extend
                 }
                 catch (Exception e)
                 {
-                    VSOutput.Message($"VSEXT(Main.cs) 삭제된 파일을 스캔하는 과정에서 예외가 발생했습니다. {e}");
+                    _VS_extendPackage.main._VSOutput.Message($"VSEXT(Main.cs) 삭제된 파일을 스캔하는 과정에서 예외가 발생했습니다. {e}");
                     _VS_extendPackage._ExceptionManager.Throw();
                 }
             }, null, 0, 3000);

@@ -9,9 +9,15 @@ namespace VS_extend
 {
     public class VSOutput
     {
-        public static JoinableTaskFactory _jtf;
+        public JoinableTaskFactory _jtf;
+        private VS_extendPackage _VS_extendPackage;
         // 이 메서드는 async Task를 반환하는 메서드 내에서 호출되어야 합니다.
-        public static void Message(string message)
+        public VSOutput(VS_extendPackage __VS_extendPackage, JoinableTaskFactory jtf)
+        {
+            _jtf = jtf;
+            _VS_extendPackage = __VS_extendPackage;
+        }
+        public void Message(string message)
         {
             JoinableTask jt = _jtf.RunAsync(async () =>
             {
@@ -26,7 +32,7 @@ namespace VS_extend
                 }
             });
         }
-        public static async Task OutputAndShowPaneAsync(string message)
+        public async Task OutputAndShowPaneAsync(string message)
         {
             // 1. UI 스레드 보장
             // Visual Studio 서비스를 호출하기 전에 항상 UI 스레드로 전환해야 합니다.

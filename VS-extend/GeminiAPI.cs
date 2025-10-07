@@ -68,7 +68,7 @@ public class GeminiFeedbackService
         }
         catch (HttpRequestException ex)
         {
-            VSOutput.Message($"VSEXT(VSOutput.cs) API 요청에 실패했습니다.: {ex.Message}");
+            _VS_extendPackage.main._VSOutput.Message($"VSEXT(VSOutput.cs) API 요청에 실패했습니다.: {ex.Message}");
             _VS_extendPackage._ExceptionManager.Throw();
             // 요청 실패 시 기본 응답 생성
             return new GeminiResponse
@@ -87,7 +87,7 @@ public class GeminiFeedbackService
         }
         catch (JsonException ex)
         {
-            VSOutput.Message($"VSEXT(VSOutput.cs) api 응답에 문제가 있습니다.: {ex.Message}");
+            _VS_extendPackage.main._VSOutput.Message($"VSEXT(VSOutput.cs) api 응답에 문제가 있습니다.: {ex.Message}");
             _VS_extendPackage._ExceptionManager.Throw();
             // JSON 파싱 실패 시 기본 응답 생성
             return new GeminiResponse

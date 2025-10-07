@@ -87,7 +87,7 @@ public class DocumentEventHandler : IVsRunningDocTableEvents
             }
             catch (Exception e)
             {
-                VSOutput.Message($"VSEXT(DocumentEventHandler.cs) 파일을 읽는 도중 문제 발생. {e}");
+                _VS_extendPackage.main._VSOutput.Message($"VSEXT(DocumentEventHandler.cs) 파일을 읽는 도중 문제 발생. {e}");
                 _VS_extendPackage._ExceptionManager.Throw();
             }
         }
