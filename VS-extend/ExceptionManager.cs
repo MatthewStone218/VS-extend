@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using EnvDTE;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Threading;
+using Newtonsoft.Json.Linq;
 
 namespace VS_extend
 {
@@ -25,6 +26,10 @@ namespace VS_extend
         public void Cancel()
         {
             CTS.Cancel();
+        }
+        public void Throw()
+        {
+            CT.ThrowIfCancellationRequested();
         }
         private void CreateNewCTS()
         {

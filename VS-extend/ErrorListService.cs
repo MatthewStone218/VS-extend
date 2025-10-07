@@ -5,6 +5,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Threading;
+using VS_extend.VSExtension;
 
 public class ErrorListService : IDisposable
 {
@@ -27,6 +28,7 @@ public class ErrorListService : IDisposable
     /// <param name="errors">키: 파일 경로, 값: 오류 메시지</param>
     public async Task ChangeAsync(Dictionary<string, string> errors)
     {
+        VS_extendPackage._VS_extendPackage.main._ExceptionManager.Throw();
         await _jtf.SwitchToMainThreadAsync();
 
         // 기존에 이 Provider가 등록했던 모든 오류 항목을 지웁니다.

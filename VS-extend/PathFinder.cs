@@ -17,6 +17,7 @@ public class PathFinder
     // DTE 객체를 받아서 활성 프로젝트의 경로를 반환하는 메서드
     public async Task<string> GetActiveProjectPathAsync(DTE dte)
     {
+        VS_extendPackage._VS_extendPackage.main._ExceptionManager.Throw();
         await _jtf.SwitchToMainThreadAsync();
 
         try

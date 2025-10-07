@@ -30,6 +30,7 @@ public class DocumentEventHandler : IVsRunningDocTableEvents
     }
     private async Task InitAsync()
     {
+        VS_extendPackage._VS_extendPackage.main._ExceptionManager.Throw();
         await _jtf.SwitchToMainThreadAsync();
 
         // RDT 서비스 가져오기
@@ -50,6 +51,7 @@ public class DocumentEventHandler : IVsRunningDocTableEvents
     }
     public async Task<int> OnAfterSaveAsync(uint docCookie)
     {
+        VS_extendPackage._VS_extendPackage.main._ExceptionManager.Throw();
         await _jtf.SwitchToMainThreadAsync();
 
         // docCookie를 사용하여 저장된 문서 정보(파일명, 경로 등)를 가져옵니다.

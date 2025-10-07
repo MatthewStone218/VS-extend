@@ -34,6 +34,7 @@ namespace VS_extend
         
         public async Task InitAsync()
         {
+            VS_extendPackage._VS_extendPackage.main._ExceptionManager.Throw();
             //로거
             VSOutput._jtf = _jtf;
 
@@ -69,6 +70,7 @@ namespace VS_extend
                     JoinableTask jt = _jtf.RunAsync(async () => {
                         try
                         {
+                            VS_extendPackage._VS_extendPackage.main._ExceptionManager.Throw();
                             var response = await _GeminiService.GetFeedbackAsync(fileContent);
                             bool problemFound = response.ProblemFound;
                             string message = response.Message;
