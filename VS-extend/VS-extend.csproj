@@ -52,7 +52,7 @@
     <Compile Include="GeminiAPI.cs" />
     <Compile Include="PathFinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SaveHandler.cs" />
+    <Compile Include="DocumentEventHandler.cs" />
     <Compile Include="VS_extendPackage.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.Threading;
 using Task = System.Threading.Tasks.Task;
 
 // IVsRunningDocTableEvents 인터페이스를 구현합니다.
-public class DocumentSaveHandler : IVsRunningDocTableEvents
+public class DocumentEventHandler : IVsRunningDocTableEvents
 {
     private readonly JoinableTaskFactory _jtf;
     private IVsRunningDocumentTable _rdt;
@@ -18,7 +18,7 @@ public class DocumentSaveHandler : IVsRunningDocTableEvents
     private bool initialized = false;
     public Action<Dictionary<string, object>> CallbackAfterSave { get; set; }
 
-    public DocumentSaveHandler(System.IServiceProvider serviceProvider, JoinableTaskFactory jtf)
+    public DocumentEventHandler(System.IServiceProvider serviceProvider, JoinableTaskFactory jtf)
     {
         _serviceProvider = serviceProvider;
         _jtf = jtf;
