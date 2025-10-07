@@ -62,7 +62,20 @@ public class GeminiFeedbackService
         string url = $"https://generativelanguage.googleapis.com/v1/models/{_model}/generateContent";
 
         var response = await _httpClient.PostAsync(url, content);
-        response.EnsureSuccessStatusCode();
+        try
+        {
+            response.EnsureSuccessStatusCode();
+        }
+        catch (HttpRequestException ex)
+        {
+            VSOutput.Message($"VSEXT(VSOutput.cs) API 요청에 실패했습니다.: {ex.Message}");
+            // 요청 실패 시 기본 응답 생성
+            return new GeminiResponse
+            {
+                ProblemFound = false,
+                Message = "API 요청에 실패했습니다."
+            };
+        }
 
         var rawResponse = await response.Content.ReadAsStringAsync();
 
@@ -72,7 +85,7 @@ public class GeminiFeedbackService
         }
         catch (JsonException ex)
         {
-            VSOutput.Message($"api 응답에 문제가 있습니다.: {ex.Message}");
+            VSOutput.Message($"VSEXT(VSOutput.cs) api 응답에 문제가 있습니다.: {ex.Message}");
             // JSON 파싱 실패 시 기본 응답 생성
             return new GeminiResponse
             {

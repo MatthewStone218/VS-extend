@@ -21,8 +21,6 @@ public class EnvironmentLoader
             return environmentVariables; // 빈 딕셔너리 반환
         }
 
-        VSOutput.Message($"[ENV] .env 파일 로드 시작: {envFilePath}");
-
         try
         {
             // 파일을 한 줄씩 읽습니다.
@@ -50,7 +48,6 @@ public class EnvironmentLoader
                     if (!string.IsNullOrEmpty(key))
                     {
                         environmentVariables[key] = value;
-                        System.Diagnostics.Debug.WriteLine($"[ENV 로드됨] Key: {key}");
                     }
                 }
             }
@@ -58,7 +55,7 @@ public class EnvironmentLoader
         catch (Exception ex)
         {
             // 파일 읽기 중 발생한 오류 처리
-            System.Diagnostics.Debug.WriteLine($"[ENV 오류] .env 파일을 읽는 중 오류 발생: {ex.Message}");
+            VSOutput.Message($"VSEXT(EnvironmentLoader.cs) .env 파일을 읽는 중 오류 발생: {ex.Message}");
         }
 
         return environmentVariables;
