@@ -40,7 +40,6 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
         {
             main = new Main(_CancellationToken, _Progress, this, _jtf);
             JoinableTask jt = _jtf.RunAsync(async () => await main.InitAsync());
-            VS_extendPackage._VS_extendPackage.main._ExceptionManager.Register(jt.Task);
         }
 
         public void StopExtension()
@@ -57,7 +56,7 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
         {
             if(main != null)
             {
-                JoinableTask jt = _jtf.RunAsync(() => main.StopAsync());
+                _jtf.Run(() => main.StopAsync());
                 main = null;
             }
         }

@@ -34,7 +34,6 @@ namespace VS_extend
         
         public async Task InitAsync()
         {
-            VS_extendPackage._VS_extendPackage.main._ExceptionManager.Throw();
             //로거
             VSOutput._jtf = _jtf;
 
