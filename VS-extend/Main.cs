@@ -18,6 +18,7 @@ namespace VS_extend
         public CancellationToken _CancellationToken;
         public IProgress<ServiceProgressData> _Progress;
         public VS_extendPackage _VsExtendPackage;
+        public FileStatusManager _FileStatusManager;
         public DocumentEventHandler _DocumentEventHandler;
         public Main(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress, VS_extendPackage vsExtendPackage)
         {
@@ -47,7 +48,7 @@ namespace VS_extend
             if (APIKey == null || APIKey == "") return;
 
             ErrorListService errorListService = new ErrorListService(_VsExtendPackage, jtf);
-            FileStatusManager fileStatusManager = new FileStatusManager(errorListService, jtf);
+            _FileStatusManager = new FileStatusManager(errorListService, jtf);
 
             _DocumentEventHandler = new DocumentEventHandler(_VsExtendPackage, jtf);
             _DocumentEventHandler.CallbackAfterSave = (args) =>
@@ -59,14 +60,14 @@ namespace VS_extend
                         var response = await geminiService.GetFeedbackAsync(fileContent);
                         bool problemFound = response.ProblemFound;
                         string message = response.Message;
-                        fileStatusManager.SavedFile(filePath, problemFound, message);
+                        _FileStatusManager.SavedFile(filePath, problemFound, message);
                     });
                 }
             };
             Scheduler scheduler = new Scheduler(() => {
                 try
                 {
-                    fileStatusManager.CleanUpNonExistentFiles();
+                    _FileStatusManager.CleanUpNonExistentFiles();
                 }
                 catch (Exception e)
                 {
