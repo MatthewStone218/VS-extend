@@ -38,8 +38,10 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
             // 3. 현재 프로젝트 경로를 가져와 저장
             PathFinder pathFinder = new PathFinder(jtf);
             string ProjectPath = await pathFinder.GetActiveProjectPathAsync(_DTE);
+            EnvironmentLoader.CheckAndInitEnvFile(Path.Combine(ProjectPath, ".env"));
             Dictionary<string,string> variable = EnvironmentLoader.LoadEnvFile(Path.Combine(ProjectPath, ".env"));
             APIKey = variable.TryGetValue("API_KEY", out string apiKey) ? apiKey : null;
+            if (APIKey == null || APIKey == "") return;
 
             ErrorListService errorListService = new ErrorListService(this, jtf);
             FileStatusManager fileStatusManager = new FileStatusManager(errorListService, jtf);
@@ -47,7 +49,6 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
             _documentEventHandler = new DocumentEventHandler(this, jtf);
             _documentEventHandler.CallbackAfterSave = (args) =>
             {
-                if (APIKey == null || APIKey == "") return;
                 if (args.TryGetValue("fileContent", out object fileContentObj) && fileContentObj is string fileContent && args.TryGetValue("filePath", out object filePathObject) && filePathObject is string filePath)
                 {
                     GeminiFeedbackService geminiService = new GeminiFeedbackService(APIKey);
@@ -59,7 +60,16 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
                     });
                 }
             };
-            Scheduler scheduler = new Scheduler(() => fileStatusManager.CleanUpNonExistentFiles(),null,0,3000);
+            Scheduler scheduler = new Scheduler(() => {
+                try
+                {
+                    fileStatusManager.CleanUpNonExistentFiles();
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.Message);
+                }
+            },null,0,3000);
         }
 
         // Package가 언로드될 때 리소스를 정리합니다.
