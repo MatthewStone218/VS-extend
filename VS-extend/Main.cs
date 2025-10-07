@@ -23,6 +23,7 @@ namespace VS_extend
         public GeminiFeedbackService _GeminiService;
         public Scheduler FileScanScheduler;
         public JoinableTaskFactory _jtf;
+        public ExceptionManager _ExceptionManager;
         public Main(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress, VS_extendPackage vsExtendPackage, JoinableTaskFactory jtf)
         {
             _CancellationToken = cancellationToken;
@@ -48,6 +49,9 @@ namespace VS_extend
             // 3. 현재 프로젝트 경로를 가져와 저장
             PathFinder pathFinder = new PathFinder(_jtf);
             string ProjectPath = await pathFinder.GetActiveProjectPathAsync(_DTE);
+
+            _ExceptionManager = new ExceptionManager(_jtf);
+
             EnvironmentLoader.CheckAndInitEnvFile(Path.Combine(ProjectPath, ".env"));
             Dictionary<string, string> variable = EnvironmentLoader.LoadEnvFile(Path.Combine(ProjectPath, ".env"));
             string APIKey = variable.TryGetValue("API_KEY", out string apiKey) ? apiKey : null;

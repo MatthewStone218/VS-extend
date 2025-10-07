@@ -15,14 +15,22 @@ namespace VS_extend
         private JoinableTaskFactory _jtf;
         public CancellationTokenSource CTS;
         public CancellationToken CT;
-        public List<Task> TaskList;
+        private List<Task> TaskList = new List<Task>();
         public ExceptionManager(JoinableTaskFactory jtf)
         {
             _jtf = jtf;
+            CreateNewCTS();
+            StartObserving();
+        }
+        private void CreateNewCTS()
+        {
             CTS = new CancellationTokenSource();
             CT = CTS.Token;
-            TaskList = new List<Task>();
-            StartObserving();
+            TaskList.Clear();
+        }
+        public void AddTask(Task t)
+        {
+            TaskList.Add(t);
         }
         private void StartObserving()
         {
@@ -33,6 +41,7 @@ namespace VS_extend
             while (true)
             {
                 Task finishedTask = await Task.WhenAny(TaskList);
+                TaskList.Remove(finishedTask);
                 if (finishedTask.IsFaulted)
                 {
                     CTS.Cancel();
