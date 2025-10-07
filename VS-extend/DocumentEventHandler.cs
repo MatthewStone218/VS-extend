@@ -18,8 +18,9 @@ public class DocumentEventHandler : IVsRunningDocTableEvents
     private IVsRunningDocumentTable _rdt;
     private uint _eventCookie;
     private readonly System.IServiceProvider _serviceProvider;
-    private Task InitTask;
+    private JoinableTask InitTask;
     private IVS_extendPackage _IVS_extendPackage;
+    private bool Inited = false;
     public Action<Dictionary<string, object>> CallbackAfterSave { get; set; }
 
     public DocumentEventHandler(IVS_extendPackage __IVS_extendPackage, JoinableTaskFactory jtf)
@@ -31,8 +32,9 @@ public class DocumentEventHandler : IVsRunningDocTableEvents
     public void Init()
     {
         JoinableTask jt = _jtf.RunAsync(async () => await InitAsync());
-        InitTask = jt.Task;
+        InitTask = jt;
         _IVS_extendPackage._ExceptionManager.Register(jt.Task);
+        Inited = true;
     }
     private async Task InitAsync()
     {
@@ -111,7 +113,10 @@ public class DocumentEventHandler : IVsRunningDocTableEvents
     // RDT 이벤트 등록 해제 (리소스 정리)
     public async Task DisposeAsync()
     {
-        await InitTask;
+        if (Inited)
+        {
+            await InitTask;
+        }
         if (_eventCookie != 0)
         {
             _rdt.UnadviseRunningDocTableEvents(_eventCookie);
