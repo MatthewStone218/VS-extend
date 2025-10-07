@@ -1,6 +1,7 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 
 public class EnvironmentLoader
 {
@@ -16,6 +17,7 @@ public class EnvironmentLoader
         if (!File.Exists(envFilePath))
         {
             System.Diagnostics.Debug.WriteLine($"[ENV] .env 파일을 경로에서 찾을 수 없습니다: {envFilePath}");
+            File.WriteAllText(envFilePath, "API_KEY=", Encoding.UTF8);
             return environmentVariables; // 빈 딕셔너리 반환
         }
 
@@ -60,5 +62,13 @@ public class EnvironmentLoader
         }
 
         return environmentVariables;
+    }
+
+    public static void CheckAndInitEnvFile(string envFilePath)
+    {
+        if (!File.Exists(envFilePath))
+        {
+            File.WriteAllText(envFilePath, "API_KEY=", Encoding.UTF8);
+        }
     }
 }

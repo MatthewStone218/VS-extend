@@ -47,7 +47,7 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
             _documentEventHandler = new DocumentEventHandler(this, jtf);
             _documentEventHandler.CallbackAfterSave = (args) =>
             {
-                if (APIKey == null) return;
+                if (APIKey == null || APIKey == "") return;
                 if (args.TryGetValue("fileContent", out object fileContentObj) && fileContentObj is string fileContent && args.TryGetValue("filePath", out object filePathObject) && filePathObject is string filePath)
                 {
                     GeminiFeedbackService geminiService = new GeminiFeedbackService(APIKey);
