@@ -18,14 +18,17 @@ namespace VS_extend.VSExtension // 네임스페이스 일치
     [Guid("705E62DA-DCD2-402B-96DA-4D65A7B6244A")]
     public sealed class VS_extendPackage : AsyncPackage
     {
+        static VS_extendPackage _VS_extendPackage;
         public Main main = null;
         public CancellationToken _CancellationToken;
         public IProgress<ServiceProgressData> _Progress;
+        public Main M => main;
         private JoinableTaskFactory _jtf;
 
         // Package가 로드될 때(초기화) 실행되는 메서드
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
+            _VS_extendPackage = this;
             _CancellationToken = cancellationToken;
             _Progress = progress;
             _jtf = JoinableTaskFactory;
